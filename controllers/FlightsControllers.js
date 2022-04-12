@@ -1,15 +1,15 @@
-export const GetFlights = async(req, res) => {
+export const GetFlights = async (req, res) => {
+
   try {
 
-  } catch(e){
-    console.log(e)
+  } catch (e) {
+    res.send(e);
   }
-}
+};
 
-export const AddNewFlight = async(req, res) => {
+export const AddNewFlight = async (req, res) => {
   try {
-
-  } catch(e){
-    console.log(e)
+  } catch (e) {
+    res.send(e)
   }
-}
+};

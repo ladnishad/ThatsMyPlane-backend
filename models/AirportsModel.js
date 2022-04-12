@@ -1,33 +1,30 @@
 import mongoose from "mongoose"
-import dayjs from "dayjs";
 
 const { Schema } = mongoose
 
-export const Flights = new Schema({
-  userId: {
+export const Airports = new Schema({
+  ICAO: {
     type: String,
     required: true
   },
-  airlineId: {
+  IATA: {
     type: String,
     required: true
   },
-  aircraftId: {
+  name: {
     type: String,
     required: true
   },
-  flightNumber: {
+  city: {
     type: String,
     required: true
   },
-  flightDate: {
-    type: Number,
+  state: {
+    type: String,
     required: true
   },
-  flightOriginAirportId: {
-    type: String
+  country: {
+    type: String,
+    required: true
   },
-  flightDestinationAirportId: {
-    type: String
-  }
 })
