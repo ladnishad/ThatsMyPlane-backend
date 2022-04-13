@@ -1,7 +1,5 @@
 import mongoose from "mongoose"
-import { Users } from "../models/UsersModel"
-
-const User = mongoose.model("User", Users)
+import { User } from "../models/UsersModel"
 
 export const SignUpUser = async(req, res) => {
   const { firstName, lastName, email } = req.body

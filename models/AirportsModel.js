@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 
-const { Schema } = mongoose
+const { Schema, model } = mongoose
 
-export const Airports = new Schema({
+const AirportsSchema = new Schema({
   ICAO: {
     type: String,
     required: true
@@ -28,3 +28,5 @@ export const Airports = new Schema({
     required: true
   },
 })
+
+export const Airport = model("Airports", AirportsSchema)
