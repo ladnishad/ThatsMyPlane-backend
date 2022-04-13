@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { AppStrings } from "../assets/AppStrings"
 import { User } from "../models/UsersModel"
 
 export const SignUpUser = async(req, res) => {
@@ -8,7 +9,7 @@ export const SignUpUser = async(req, res) => {
   console.log(existingUser)
 
   if(existingUser){
-    res.send("User with email address already exists")
+    res.send(AppStrings["user-already-exists-err-msg"])
   }
 
   else{
