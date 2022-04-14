@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import bodyparser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+
+import { checkJwtAuth } from "./middlewares/auth"
 import { routes } from "./routes/appRoutes";
 
 import { createUsers } from "./migration/createUsers"
@@ -28,6 +30,8 @@ app.use(
 app.use(bodyparser.json());
 
 app.use(cors());
+
+app.use(checkJwtAuth);
 
 routes(app);
 
