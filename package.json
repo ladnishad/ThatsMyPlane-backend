@@ -18,8 +18,7 @@
     "express": "^4.17.2",
     "express-jwt": "^6.1.1",
     "jwks-rsa": "^2.0.5",
-    "mongoose": "^6.2.10",
-    "xlsx": "^0.18.5"
+    "mongoose": "^6.2.10"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",
