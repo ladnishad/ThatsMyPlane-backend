@@ -1,6 +1,6 @@
-import { SignUpUser } from "../controllers/UsersController"
-import { GetFlights, AddNewFlight } from "../controllers/FlightsControllers"
-import { AddAirline } from "../controllers/AirlinesControllers"
+import { SignUpUser } from "../controllers/users/UsersController"
+import { GetFlights, AddNewFlight } from "../controllers/flights/FlightsControllers"
+import { AddAirline } from "../controllers/airlines/AirlinesControllers"
 
 export const routes = (app) => {
   // Public

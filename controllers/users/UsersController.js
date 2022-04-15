@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { AppStrings } from "../assets/AppStrings"
-import { User } from "../models/UsersModel"
+import { AppStrings } from "../../assets/AppStrings"
+import { User } from "../../models/UsersModel"
 
 export const SignUpUser = async(req, res) => {
   const { firstName, lastName, email } = req.body

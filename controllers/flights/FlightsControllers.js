@@ -2,7 +2,8 @@ import axios from "axios"
 import dayjs from "dayjs"
 import dotenv from "dotenv";
 
-import { asyncMap } from "../helpers"
+import { asyncMap } from "../../helpers"
+import { get } from "./helpers"
 
 dotenv.config();
 export const GetFlights = async (req, res) => {
@@ -17,8 +18,9 @@ export const GetFlights = async (req, res) => {
 export const AddNewFlight = async (req, res) => {
   const { flightNumber, flightDate } = req.body
   try {
-    const flightDateDayJsObject = dayjs(flightDate).toISOString()
+    const flightDateDayJsObject = await get.flightDateDayJsObject({ flightDate })
 
+    // const flightsData = await get.flightsOnFlightDate({ flightNumber, flightDate: flightDateDayJsObject })
     // Flightaware API calls to fetch aircraft registration based on the flight number
     const flightsWithThisFlightNumberData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${flightNumber.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
 

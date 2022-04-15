@@ -1,9 +1,9 @@
 import mongoose from "mongoose"
 import dayjs from "dayjs";
 
-const { Schema } = mongoose
+const { Schema, model } = mongoose
 
-export const Flights = new Schema({
+const FlightsSchema = new Schema({
   userId: {
     type: String,
     required: true
@@ -31,3 +31,5 @@ export const Flights = new Schema({
     type: String
   }
 })
+
+export const Flight = model("Flights", FlightsSchema)
