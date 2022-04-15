@@ -12,4 +12,4 @@ APIs:
 
 Flight Number to Aircraft registration: Flightaware AeroAPI - https://flightaware.com/commercial/aeroapi/
 
-Aircraft Registration to Aircraft Details + Image: AeroDataBox through RapidAPI - https://rapidapi.com/aedbx-aedbx/api/aerodatabox/
+Aircraft Registration to Aircraft Details + Image: Own API using Flickr services - https://www.flickr.com/services/api/
