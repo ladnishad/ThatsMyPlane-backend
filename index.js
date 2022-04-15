@@ -1,25 +1,55 @@
-import express from 'express'
-import mongoose from 'mongoose'
-import bodyparser from 'body-parser'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { pool } from "./dbConnection"
-import { routes } from "./routes/appRoutes"
+import express from "express";
+import mongoose from "mongoose";
+import bodyparser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
 
-dotenv.config()
+import { checkJwtAuth } from "./middlewares/auth"
+import { routes } from "./routes/appRoutes";
 
-const app = express()
+import { createUsers } from "./migration/createUsers"
+import { ImportAirports } from "./migration/importAirports"
+import { ImportAirlines } from "./migration/importAirlines"
 
-app.use(bodyparser.urlencoded({
-  extended: true
-}))
+dotenv.config();
 
-app.use(bodyparser.json())
+const app = express();
 
-app.use(cors())
-
-routes(app)
-
-app.listen(process.env.SERVER_PORT, () => {
-  console.log("Server running on port 3000")
+mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,{
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
+
+
+app.use(
+  bodyparser.urlencoded({
+    extended: true
+  })
+);
+
+app.use(bodyparser.json());
+
+app.use(cors());
+
+app.use(checkJwtAuth);
+
+routes(app);
+
+app.listen(process.env.SERVER_PORT, async() => {
+  console.log(`Server running on port ${process.env.SERVER_PORT}`);
+
+  // Run to create users
+  // console.log("Creating user(s)")
+  // await createUsers()
+  // console.log("Finished creating users")
+
+  // Run to ingest airports data (Just USA for now)
+  // console.log("Initiating Airports Data load")
+  // await ImportAirports()
+  // console.log("Finished Airports Data Load")
+
+  // Run to ingest airlines data (Just USA for now)
+  // console.log("Initiating Airlines Data load")
+  // await ImportAirlines()
+  // console.log("Finished Airlines Data Load")
+});
