@@ -1,5 +1,5 @@
 import { SignUpUser } from "../controllers/users/UsersController"
-import { GetFlights, AddNewFlight } from "../controllers/flights/FlightsControllers"
+import { SearchFlights, AddFlightToUserAccount, AddNewFlight } from "../controllers/flights/FlightsControllers"
 import { AddAirline } from "../controllers/airlines/AirlinesControllers"
 
 export const routes = (app) => {
@@ -10,7 +10,12 @@ export const routes = (app) => {
   app.route("/airlines")
   .post(AddAirline)
 
+  app.route("/search/flights")
+  .post(SearchFlights)
+
+  app.route("/flight/add")
+  .post(AddFlightToUserAccount)
+
   app.route("/flights")
-  .get(GetFlights)
   .post(AddNewFlight)
 }

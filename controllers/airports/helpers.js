@@ -13,6 +13,6 @@ dotenv.config();
 export const get = {
   airport: async({ airportICAO }) => {
     const airportSearchResult = await Airport.find({ ICAO: airportICAO }).exec()
-    return airportSearchResult
+    return airportSearchResult.pop()
   }
 }

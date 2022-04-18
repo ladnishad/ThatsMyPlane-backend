@@ -22,7 +22,7 @@ const FlightsSchema = new Schema({
   },
   flightDate: {
     type: Number,
-    required: true
+    default: 0
   },
   flightOriginAirportId: {
     type: String

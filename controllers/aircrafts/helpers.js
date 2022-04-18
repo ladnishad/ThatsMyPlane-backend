@@ -5,7 +5,7 @@ import axios from "axios"
 import { User } from "../../models/UsersModel"
 import { Flight } from "../../models/FlightsModel"
 import { Airline } from "../../models/AirlinesModel"
-import { Aircraft } from "../../models/AircraftsModel"
+import { AircraftType, Aircraft } from "../../models/AircraftsModel"
 import { Airport } from "../../models/AirportsModel"
 
 import { AppStrings } from "../../assets/AppStrings"
@@ -15,12 +15,12 @@ dotenv.config();
 export const get = {
   aircraft: async({ aircraftRegistration }) => {
     const aircraftSearchResult = await Aircraft.find({ registrationNum: aircraftRegistration }).exec()
-    return aircraftSearchResult
+    return aircraftSearchResult.pop()
   }
 }
 
 export const set = {
-  "aircraft.create": async({ aircraftRegistration, aircraftType }) => {
+  createAircraft: async({ aircraftRegistration, aircraftType }) => {
     const aircraftOnDb = await Aircraft.find({ registrationNum: aircraftRegistration }).exec()
 
     if(aircraftOnDb.length){
@@ -28,9 +28,15 @@ export const set = {
     }
 
     else{
+      const aircraftTypeOnDb = await AircraftType.find({ ICAO: aircraftType.toUpperCase() }).exec()
+
+      if(!aircraftTypeOnDb.length){
+        throw new Error(AppStrings["aircraft-type-not-supported-err-msg"])
+      }
+
       const NewAircraft = new Aircraft({
         registrationNum: aircraftRegistration,
-        model: aircraftType
+        aircraftTypeId: aircraftTypeOnDb.pop()._id
       })
 
       try{

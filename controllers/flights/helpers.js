@@ -14,6 +14,7 @@ import { get as airlineGetters } from "../airlines/helpers"
 import { get as airportGetters } from "../airports/helpers"
 import { get as aircraftGetters, set as aircraftSetters } from "../aircrafts/helpers"
 
+import { asyncMap } from "../../helpers"
 dotenv.config();
 
 export const get = {
@@ -26,6 +27,8 @@ export const get = {
 
     const flightsInformation = await asyncMap(flightsWithThisFlightNumberOnFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator, operator_iata, progress_percent }) => {
       return {
+        flightNumber,
+        flightDate,
         airlineICAO: operator,
         airlineIATA: operator_iata,
         aircraftRegistration: registration,
@@ -46,11 +49,12 @@ export const get = {
 export const set = {
   addUserFlight: async({ userId, userFlight }) => {
     const user = await User.findById(userId).exec()
+
     if(!user){
       throw new Error(AppStrings["user-not-found-err-msg"])
     }
 
-    const { airlineIATA, airlineICAO, aircraftRegistration, aircraftType, originICAO, destinationICAO, flightDate, flightNumber } = userFlight
+    const { airlineIATA, airlineICAO, aircraftRegistration, aircraftType, originICAO, destinationICAO, scheduledOut, flightNumber } = userFlight
 
     const airline = await airlineGetters.airline({ airlineICAO })
 
@@ -59,6 +63,7 @@ export const set = {
     }
 
     const originAirport = await airportGetters.airport({ airportICAO: originICAO })
+
     const destinationAirport = await airportGetters.airport({ airportICAO: destinationICAO })
 
     if(!originAirport || !destinationAirport){
@@ -66,9 +71,17 @@ export const set = {
     }
 
     let aircraft = await aircraftGetters.aircraft({ aircraftRegistration })
-
     if(!aircraft){
-        aircraft = await aircraftSetters.aircraft.create({ aircraftRegistration, aircraftType})
+        aircraft = await aircraftSetters.createAircraft({ aircraftRegistration, aircraftType})
+    }
+
+    let flightDateToAdd = 0
+
+    if(scheduledOut){
+      flightDateToAdd = dayjs(scheduledOut).valueOf()
+    }
+    if(flightDate){
+      flightDateToAdd = dayjs(flightDate).valueOf()
     }
 
     const FlightToAddForUser = new Flight({
@@ -76,7 +89,7 @@ export const set = {
       airlineId: airline._id,
       aircraftId: aircraft._id,
       flightNumber,
-      flightDate,
+      flightDate: flightDateToAdd,
       flightOriginAirportId: originAirport._id,
       flightDestinationAirportId: destinationAirport._id
     })

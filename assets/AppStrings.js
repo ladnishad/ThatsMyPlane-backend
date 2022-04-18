@@ -9,4 +9,6 @@ export const AppStrings = {
   "airport-not-supported-err-msg": "We do not have data for this airport yet",
 
   "aircraft-already-exists-err-msg": "Aircraft already exists",
+
+  "aircraft-type-not-supported-err-msg": "Aircraft type not supported."
 }
