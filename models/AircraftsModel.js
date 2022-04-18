@@ -2,14 +2,10 @@ import mongoose from "mongoose"
 
 const { Schema, model } = mongoose
 
-const AircraftsSchema = new Schema({
-  registrationNum: {
-    type: String,
-    required: true
-  },
+const AircraftsTypeSchema = new Schema({
   ICAO: {
     type: String,
-    default: ""
+    required: true
   },
   IATA: {
     type: String,
@@ -18,11 +14,19 @@ const AircraftsSchema = new Schema({
   model: {
     type: String,
     required: true
-  },
-  manufacturer: {
-    type: String,
-    default: ""
-  },
+  }
 })
 
+const AircraftsSchema = new Schema({
+  registrationNum: {
+    type: String,
+    required: true
+  },
+  aircraftTypeId: {
+    type: String,
+    required: true
+  }
+})
+
+export const AircraftType = model("AircraftTypes", AircraftsTypeSchema)
 export const Aircraft = model("Aircrafts", AircraftsSchema)

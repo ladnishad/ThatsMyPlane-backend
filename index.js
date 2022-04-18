@@ -10,6 +10,7 @@ import { routes } from "./routes/appRoutes";
 import { createUsers } from "./migration/createUsers"
 import { ImportAirports } from "./migration/importAirports"
 import { ImportAirlines } from "./migration/importAirlines"
+import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
 dotenv.config();
 
@@ -52,4 +53,7 @@ app.listen(process.env.SERVER_PORT, async() => {
   // console.log("Initiating Airlines Data load")
   // await ImportAirlines()
   // console.log("Finished Airlines Data Load")
+
+  // Run to ingest aircraft types data
+  // await ImportAircraftsTypes()
 });
