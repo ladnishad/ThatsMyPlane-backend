@@ -8,7 +8,7 @@ import { checkJwtAuth } from "./middlewares/auth"
 import { routes } from "./routes/appRoutes";
 
 import { createUsers } from "./migration/createUsers"
-import { ImportAirports } from "./migration/importAirports"
+import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAirports"
 import { ImportAirlines } from "./migration/importAirlines"
 import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
@@ -46,6 +46,9 @@ app.listen(process.env.SERVER_PORT, async() => {
 
   // Run to ingest airports data (Just USA for now)
   // await ImportAirports()
+
+  // Run to update lat long format to utilize geospatial from MongoDB
+  // await AddGeoLocationFromDbBackup()
 
   // Run to ingest airlines data (Just USA for now)
   // console.log("Initiating Airlines Data load")

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import axios from "axios"
 import { Airport } from "../models/AirportsModel"
 import { AirportsUsaData } from "../dataSources/AirportsUsaData"
+import { AirportsUsaFromDB } from "../dataSources/AirportsUsaDatabaseExport"
 import { asyncForEach } from "../helpers"
 
 dotenv.config();
@@ -54,5 +55,33 @@ export const ImportAirports = async() => {
   })
 
   console.log("Finished Airports Data Load")
+  return 1
+}
+
+export const AddGeoLocationFromDbBackup = async() => {
+  console.log(`Initiating lat long fix`)
+  await asyncForEach(AirportsUsaFromDB, async({ ICAO, IATA, name, city, state, country, latDecimalDegrees, longDecimalDegrees }) => {
+    const AirportToSave = new Airport({
+      ICAO,
+      IATA,
+      name,
+      city,
+      state,
+      country,
+      location: {
+        type: 'Point',
+        coordinates: [longDecimalDegrees, latDecimalDegrees]
+      }
+    })
+
+    AirportToSave.save((err, AirportSaved) => {
+      if(err){
+        console.error(err)
+      }
+      return AirportSaved
+    })
+  })
+
+  console.log(`Finished lat long fix`)
   return 1
 }

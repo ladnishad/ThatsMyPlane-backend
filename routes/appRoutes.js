@@ -2,6 +2,7 @@ import { SignUpUser } from "../controllers/users/UsersController"
 import { SearchFlights, AddFlightToUserAccount, AddNewFlight } from "../controllers/flights/FlightsControllers"
 import { AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
+import { NearByAirports } from "../controllers/airports/AirportsControllers"
 
 export const routes = (app) => {
   // Public
@@ -14,4 +15,6 @@ export const routes = (app) => {
   app.route("/flight/add").post(AddFlightToUserAccount)
 
   app.route("/aircraft/images").get(GetAircraftImage)
+
+  app.route("/airports/nearby").get(NearByAirports)
 }

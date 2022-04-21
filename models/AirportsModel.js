@@ -2,6 +2,18 @@ import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 
+export const LocationPointSchema = new Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
+  }
+})
+
 const AirportsSchema = new Schema({
   ICAO: {
     type: String,
@@ -27,14 +39,18 @@ const AirportsSchema = new Schema({
     type: String,
     required: true
   },
-  latDecimalDegrees: {
-    type: Number,
-    required: true
+  location: {
+    type: LocationPointSchema,
+    index: '2dsphere'
   },
-  longDecimalDegrees: {
-    type: Number,
-    required: true
-  }
+  // latDecimalDegrees: {
+  //   type: Number,
+  //   required: true
+  // },
+  // longDecimalDegrees: {
+  //   type: Number,
+  //   required: true
+  // }
 })
 
 export const Airport = model('Airports', AirportsSchema)
