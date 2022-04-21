@@ -5,21 +5,13 @@ import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 
 export const routes = (app) => {
   // Public
-  app.route("/signup")
-  .post(SignUpUser)
+  app.route("/signup").post(SignUpUser)
 
-  app.route("/airlines")
-  .post(AddAirline)
+  app.route("/airlines").post(AddAirline)
 
-  app.route("/search/flights")
-  .post(SearchFlights)
+  app.route("/search/flights").post(SearchFlights)
 
-  app.route("/flight/add")
-  .post(AddFlightToUserAccount)
+  app.route("/flight/add").post(AddFlightToUserAccount)
 
-  app.route("/aircraft/images")
-  .get(GetAircraftImage)
-
-  app.route("/flights")
-  .post(AddNewFlight)
+  app.route("/aircraft/images").get(GetAircraftImage)
 }

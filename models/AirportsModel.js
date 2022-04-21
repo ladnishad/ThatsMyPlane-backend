@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 
@@ -27,6 +27,14 @@ const AirportsSchema = new Schema({
     type: String,
     required: true
   },
+  latDecimalDegrees: {
+    type: Number,
+    required: true
+  },
+  longDecimalDegrees: {
+    type: Number,
+    required: true
+  }
 })
 
-export const Airport = model("Airports", AirportsSchema)
+export const Airport = model('Airports', AirportsSchema)

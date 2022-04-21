@@ -45,9 +45,7 @@ app.listen(process.env.SERVER_PORT, async() => {
   // console.log("Finished creating users")
 
   // Run to ingest airports data (Just USA for now)
-  // console.log("Initiating Airports Data load")
   // await ImportAirports()
-  // console.log("Finished Airports Data Load")
 
   // Run to ingest airlines data (Just USA for now)
   // console.log("Initiating Airlines Data load")

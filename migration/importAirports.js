@@ -1,21 +1,48 @@
 import mongoose from "mongoose"
-
+import dotenv from "dotenv";
+import axios from "axios"
 import { Airport } from "../models/AirportsModel"
 import { AirportsUsaData } from "../dataSources/AirportsUsaData"
 import { asyncForEach } from "../helpers"
 
+dotenv.config();
+
 export const ImportAirports = async() => {
+  console.log("Initiating Airports Data load")
   const inputData = AirportsUsaData
 
-  await asyncForEach(inputData, async({ ICAO, IATA, Name, City, Country, State }) => {
-    IATA = IATA === "N/A" ? ICAO.slice(1).toUpperCase() : IATA.toUpperCase()
+  await asyncForEach(inputData, async(airport) => {
+    let latDecimalDegrees = airport["LAT DECIMAL DEGREES"]
+    let longDecimalDegrees = airport["LONG DECIMAL DEGREES"]
+    const IATA = airport.IATA === "N/A" ? airport.ICAO.slice(1).toUpperCase() : airport.IATA.toUpperCase()
+    if( latDecimalDegrees === 0 && longDecimalDegrees === 0){
+      console.log(`${airport.NAME} has no data, looking through api`)
+      try{
+        const airportData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/airports/${airport.ICAO.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
+        if(!airportData.data){
+          console.log(`${airport.NAME} entry not found`)
+        }
+        if(airportData.data.latitude && airportData.data.longitude){
+          latDecimalDegrees = airportData.data.latitude
+          longDecimalDegrees = airportData.data.longitude
+        }
+        else{
+          console.log(`Couldn't find lat long for ${airport.NAME}`)
+        }
+      } catch(e){
+        console.log(`Couldn't find lat long for ${airport.NAME}`)
+      }
+    }
     const AirportToSave = new Airport({
-      ICAO: ICAO.toUpperCase(),
-      IATA,
-      name: Name.toUpperCase(),
-      city: City.toUpperCase(),
-      state: State.toUpperCase(),
-      country: Country.toUpperCase()
+      ICAO: airport.ICAO.toUpperCase(),
+      IATA: airport.IATA,
+      name: airport.NAME.toUpperCase(),
+      city: airport.CITY.toUpperCase(),
+      state: airport.State.toUpperCase(),
+      country: airport.Country.toUpperCase(),
+      latDecimalDegrees,
+      longDecimalDegrees
+
     })
 
     AirportToSave.save((err, AirportSaved) => {
@@ -26,5 +53,6 @@ export const ImportAirports = async() => {
     })
   })
 
+  console.log("Finished Airports Data Load")
   return 1
 }
