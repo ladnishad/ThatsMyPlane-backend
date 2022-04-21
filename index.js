@@ -30,9 +30,11 @@ app.use(
 
 app.use(bodyparser.json());
 
-app.use(cors());
-
 app.use(checkJwtAuth);
+
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 routes(app);
 
