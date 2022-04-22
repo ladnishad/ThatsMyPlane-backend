@@ -1,10 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
+import passport from "passport"
 import bodyparser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import { checkJwtAuth } from "./middlewares/auth"
+import PassportConfig from "./middlewares/auth"
 import { routes } from "./routes/appRoutes";
 
 import { createUsers } from "./migration/createUsers"
@@ -14,6 +15,7 @@ import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
 dotenv.config();
 
+PassportConfig(passport)
 const app = express();
 
 mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,{
@@ -30,7 +32,6 @@ app.use(
 
 app.use(bodyparser.json());
 
-app.use(checkJwtAuth);
 
 app.use(cors({
   origin: 'http://localhost:3000'

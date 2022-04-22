@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import dayjs from "dayjs";
+import bcrypt from 'bcrypt'
 
 const { Schema, model } = mongoose
 
@@ -16,11 +17,31 @@ const UsersSchema = new Schema({
     type: String,
     required: true
   },
-  // TODO: Password
+  password: {
+    type: String,
+    required: true
+  },
   signupDate: {
     type: Number,
     default: dayjs().valueOf()
   },
 })
+
+UsersSchema.pre("save", async function(next) {
+  const { password } = this
+  const hashedPassword = await bcrypt.hash(password, 10)
+  this.password = hashedPassword
+
+  next()
+})
+
+UsersSchema.methods = {
+  isValidPassword: async function(password){
+    const userPassword = this.password
+    const compare = await bcrypt.compare(password, userPassword)
+
+    return compare
+  }
+}
 
 export const User = model("Users", UsersSchema)

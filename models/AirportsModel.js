@@ -43,14 +43,6 @@ const AirportsSchema = new Schema({
     type: LocationPointSchema,
     index: '2dsphere'
   },
-  // latDecimalDegrees: {
-  //   type: Number,
-  //   required: true
-  // },
-  // longDecimalDegrees: {
-  //   type: Number,
-  //   required: true
-  // }
 })
 
 export const Airport = model('Airports', AirportsSchema)
