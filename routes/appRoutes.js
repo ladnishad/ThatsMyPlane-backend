@@ -34,9 +34,10 @@ export const routes = (app) => {
           }
 
           const body = { _id: user.id, email: user.email }
-          const token = jwt.sign({ user: body }, process.env.PASSPORT_LOCAL_LOGIN_SECRET)
+          const token = jwt.sign({ user: body }, process.env.PASSPORT_LOCAL_LOGIN_SECRET,{ expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRY}` })
+          const refreshToken = jwt.sign({ user: body }, process.env.PASSPORT_LOCAL_REFRESH_SECRET,{ expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRY}` })
 
-          return res.json({ token })
+          return res.json({ token, refreshToken })
         })
       } catch(e){
         return next(e)
