@@ -6,6 +6,7 @@ export const AppStrings = {
   "user-no-admin-access-err-msg": "Need admin access",
   "user-signup-successful": "Sign up successful",
   "user-login-successful": "Login successful",
+  "user-logout-successful": "Logout successful",
   "user-not-logged-in": "You're not logged in",
   "user-incorrect-password": "Incorrect password",
 

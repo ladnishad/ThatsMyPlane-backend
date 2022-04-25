@@ -23,7 +23,6 @@ mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${proc
   useUnifiedTopology: true
 })
 
-
 app.use(
   bodyparser.urlencoded({
     extended: true
