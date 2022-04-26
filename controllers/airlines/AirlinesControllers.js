@@ -1,6 +1,6 @@
-import { User } from "../models/UsersModel"
-import { Airline } from "../models/AirlinesModel"
-import { AppStrings } from "../assets/AppStrings"
+import { User } from "../../models/UsersModel"
+import { Airline } from "../../models/AirlinesModel"
+import { AppStrings } from "../../assets/AppStrings"
 
 export const AddAirline = async(req, res) => {
   const { userId, admin, IATA, ICAO, name, country } = req.body
