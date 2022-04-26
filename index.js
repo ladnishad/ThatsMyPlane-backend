@@ -1,25 +1,29 @@
 import express from "express";
 import mongoose from "mongoose";
+import passport from "passport"
 import bodyparser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import { checkJwtAuth } from "./middlewares/auth"
+import PassportConfig from "./middlewares/auth"
 import { routes } from "./routes/appRoutes";
 
 import { createUsers } from "./migration/createUsers"
-import { ImportAirports } from "./migration/importAirports"
+import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAirports"
 import { ImportAirlines } from "./migration/importAirlines"
+import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
+PassportConfig(passport)
 const app = express();
 
-mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,{
+mongoose.connect(process.env.DB_LINK,{
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-
 
 app.use(
   bodyparser.urlencoded({
@@ -29,9 +33,10 @@ app.use(
 
 app.use(bodyparser.json());
 
-app.use(cors());
 
-app.use(checkJwtAuth);
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 routes(app);
 
@@ -44,12 +49,16 @@ app.listen(process.env.SERVER_PORT, async() => {
   // console.log("Finished creating users")
 
   // Run to ingest airports data (Just USA for now)
-  // console.log("Initiating Airports Data load")
   // await ImportAirports()
-  // console.log("Finished Airports Data Load")
+
+  // Run to update lat long format to utilize geospatial from MongoDB
+  // await AddGeoLocationFromDbBackup()
 
   // Run to ingest airlines data (Just USA for now)
   // console.log("Initiating Airlines Data load")
   // await ImportAirlines()
   // console.log("Finished Airlines Data Load")
+
+  // Run to ingest aircraft types data
+  // await ImportAircraftsTypes()
 });

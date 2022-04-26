@@ -12,3 +12,7 @@ export const asyncMap = async (array = [], callback) => {
   }
   return resultArray;
 };
+
+export const milesToMeters = (miles) => {
+  return miles * 1609.34
+}

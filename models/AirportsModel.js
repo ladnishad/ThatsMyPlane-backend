@@ -1,6 +1,18 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
+
+export const LocationPointSchema = new Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
+  }
+})
 
 const AirportsSchema = new Schema({
   ICAO: {
@@ -27,6 +39,10 @@ const AirportsSchema = new Schema({
     type: String,
     required: true
   },
+  location: {
+    type: LocationPointSchema,
+    index: '2dsphere'
+  },
 })
 
-export const Airport = model("Airports", AirportsSchema)
+export const Airport = model('Airports', AirportsSchema)
