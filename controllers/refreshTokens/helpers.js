@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { RefreshToken } from "../../models/RefreshTokenModel"
 
 export const get = {
@@ -26,7 +27,7 @@ export const set = {
       const NewRefreshTokenForUser = new RefreshToken({
         userId,
         token,
-        expiry
+        expireAt: dayjs(expiry).toDate()
       })
 
       const SavedRefreshTokenForUser = await NewRefreshTokenForUser.save()

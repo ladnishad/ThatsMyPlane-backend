@@ -1,4 +1,7 @@
 import mongoose from "mongoose"
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { Schema, model } = mongoose
 
@@ -11,7 +14,10 @@ export const RefreshTokenSchema = new Schema({
     type: String,
     default: ""
   },
-  expiry: Number
+  expireAt: {
+    type: Date,
+    expires: `${process.env.JWT_REFRESH_TOKEN_EXPIRY}`
+  }
 })
 
 export const RefreshToken = model("RefreshTokens", RefreshTokenSchema)
