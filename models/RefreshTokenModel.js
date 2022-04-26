@@ -1,7 +1,9 @@
 import mongoose from "mongoose"
 import dotenv from "dotenv";
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const { Schema, model } = mongoose
 

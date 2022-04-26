@@ -7,7 +7,9 @@ import { User } from "../models/UsersModel"
 import { get as UserGetters, set as UserSetters } from "../controllers/users/helpers"
 import { AppStrings } from "../assets/AppStrings"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const PassportConfig = (passport) => {
   // Local Signup

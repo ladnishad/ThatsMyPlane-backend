@@ -15,7 +15,10 @@ import { get as airportGetters } from "../airports/helpers"
 import { get as aircraftGetters, set as aircraftSetters } from "../aircrafts/helpers"
 
 import { asyncMap } from "../../helpers"
-dotenv.config();
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const get = {
   flightDateDayJsObject: ({ flightDate }) => dayjs(flightDate).toISOString(),

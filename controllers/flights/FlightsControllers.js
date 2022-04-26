@@ -7,7 +7,9 @@ import { get as flightGetters, set as flightSetters } from "./helpers"
 import { get as aircraftGetters, set as aircraftSetters } from "../aircrafts/helpers"
 import { get as userGetters } from "../users/helpers"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const SearchFlights = async(req, res) => {
   const { flightNumber, flightDate } = req.body

@@ -8,7 +8,9 @@ import { Airline } from "../../models/AirlinesModel"
 import { Aircraft } from "../../models/AircraftsModel"
 import { Airport } from "../../models/AirportsModel"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const get = {
   airline: async({ airlineICAO }) => {

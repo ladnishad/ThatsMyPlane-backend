@@ -5,7 +5,9 @@ import { Airline } from "../models/AirlinesModel"
 import { AirlinesUsaData } from "../dataSources/AirlinesUsaData"
 import { asyncForEach } from "../helpers"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const ImportAirlines = async() => {
   const inputData = AirlinesUsaData

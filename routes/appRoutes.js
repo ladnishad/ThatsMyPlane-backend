@@ -12,7 +12,9 @@ import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 import { NearByAirports } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 // TODO: Configure jwt with redis, currently does not return anything from /login
 

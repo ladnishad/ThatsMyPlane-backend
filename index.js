@@ -13,12 +13,14 @@ import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAi
 import { ImportAirlines } from "./migration/importAirlines"
 import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 PassportConfig(passport)
 const app = express();
 
-mongoose.connect(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,{
+mongoose.connect(process.env.DB_LINK,{
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
