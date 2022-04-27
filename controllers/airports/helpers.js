@@ -9,9 +9,7 @@ import { Aircraft } from "../../models/AircraftsModel"
 import { Airport } from "../../models/AirportsModel"
 import { milesToMeters } from "../../helpers"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 export const get = {
   airport: async({ airportICAO }) => {
