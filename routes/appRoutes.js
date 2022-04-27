@@ -2,6 +2,9 @@ import passport from "passport"
 import jwt from "jsonwebtoken"
 import JWTR from 'jwt-redis';
 import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express"
+
+import { SwaggerSpec } from "../swaggerConfig"
 import { RedisClientConnect } from "../redisConfig"
 import { LogoutUser } from "../controllers/users/UsersController"
 import { get as UserGetters} from "../controllers/users/helpers"
@@ -22,6 +25,8 @@ dotenv.config();
 
 export const routes = (app) => {
   // Public
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(SwaggerSpec))
+
   app.post("/signup", passport.authenticate("signup", { session: false }), async(req, res, next) => {
     res.json({
       message: AppStrings["user-signup-successful"]
@@ -76,4 +81,8 @@ export const routes = (app) => {
 
   app.route("/airports/nearby")
   .get(passport.authenticate('jwt', { session: false }), NearByAirports)
+
+  app.get("*", async(req, res) => {
+    res.redirect('/docs')
+  })
 }
