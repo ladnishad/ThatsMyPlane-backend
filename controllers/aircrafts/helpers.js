@@ -11,9 +11,7 @@ import { Airport } from "../../models/AirportsModel"
 import { AppStrings } from "../../assets/AppStrings"
 import { asyncMap } from "../../helpers"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 export const get = {
   aircraft: async({ aircraftRegistration }) => {
