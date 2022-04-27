@@ -3,9 +3,7 @@ import dotenv from "dotenv";
 import { User } from "../../models/UsersModel"
 import { AppStrings } from "../../assets/AppStrings"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 export const get = {
   userById: async({ userId }) => {

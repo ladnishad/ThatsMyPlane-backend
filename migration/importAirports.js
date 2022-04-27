@@ -6,9 +6,7 @@ import { AirportsUsaData } from "../dataSources/AirportsUsaData"
 import { AirportsUsaFromDB } from "../dataSources/AirportsUsaDatabaseExport"
 import { asyncForEach } from "../helpers"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 export const ImportAirports = async() => {
   console.log("Initiating Airports Data load")

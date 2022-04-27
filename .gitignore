@@ -1,3 +1,4 @@
 node_modules/
 dataSources/
 .env
+dockerBuildSteps.txt

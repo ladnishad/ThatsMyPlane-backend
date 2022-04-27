@@ -5,9 +5,7 @@ import { AircraftType } from "../models/AircraftsModel"
 import { AircraftTypesData } from "../dataSources/AircraftsTypesData"
 import { asyncForEach } from "../helpers"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 export const ImportAircraftsTypes = async() => {
   console.log("Initiating aircraft types data load")

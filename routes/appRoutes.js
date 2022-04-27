@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import JWTR from 'jwt-redis';
 import dotenv from "dotenv";
 import { RedisClientConnect } from "../redisConfig"
-import { SignUpUser, LogoutUser } from "../controllers/users/UsersController"
+import { LogoutUser } from "../controllers/users/UsersController"
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
 import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
@@ -12,9 +12,7 @@ import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 import { NearByAirports } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 
 // TODO: Configure jwt with redis, currently does not return anything from /login
 

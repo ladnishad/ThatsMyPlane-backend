@@ -4,7 +4,8 @@
   "description": "Backend for the TrackMyFlights App",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon --exec babel-node index.js",
+    "server": "NODE_ENV=development nodemon --exec babel-node index.js",
+    "prod-server": "NODE_ENV=production nodemon --exec babel-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nishad Lad",
