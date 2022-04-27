@@ -1,4 +1,5 @@
 export const AppStrings = {
+  "swagger-description": 'Production endpoints server',
   "some-error": "An error occurred",
 
   "user-not-found-err-msg": "User not found",
