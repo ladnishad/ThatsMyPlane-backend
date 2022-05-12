@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import passport from "passport"
 import bodyparser from "body-parser";
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -32,6 +33,7 @@ app.use(
 
 app.use(bodyparser.json());
 
+app.use(cookieParser())
 
 app.use(cors({
   origin: 'http://localhost:3000'
