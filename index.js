@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 
 import PassportConfig from "./middlewares/auth"
 import { routes } from "./routes/appRoutes";
-
+import CorsOptions from "./config/corsOptions"
 import { createUsers } from "./migration/createUsers"
 import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAirports"
 import { ImportAirlines } from "./migration/importAirlines"
@@ -35,9 +35,7 @@ app.use(bodyparser.json());
 
 app.use(cookieParser())
 
-app.use(cors({
-  origin: 'http://localhost:3000'
-}));
+app.use(cors(CorsOptions));
 
 routes(app);
 

@@ -6,7 +6,7 @@ import swaggerUi from "swagger-ui-express"
 
 import { SwaggerSpec } from "../swaggerConfig"
 import { RedisClientConnect } from "../redisConfig"
-import { LoginUser, RefreshUserToken } from "../controllers/auth/authControllers"
+import { LoginUser, RefreshUserToken } from "../controllers/auth/AuthControllers"
 import { LogoutUser } from "../controllers/users/UsersController"
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"

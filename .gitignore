@@ -1,4 +1,5 @@
 node_modules/
 dataSources/
+config/allowedOrigins.js
 .env
 dockerBuildSteps.txt

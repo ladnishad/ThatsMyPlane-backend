@@ -58,7 +58,6 @@ export const RefreshUserToken = async(req, res) => {
 
   const decodedRefreshToken = await jwt.verify(refreshToken, process.env.PASSPORT_LOCAL_REFRESH_SECRET)
 
-  console.log(decodedRefreshToken.user);
   if(decodedRefreshToken.user._id !== userFromToken._id){
     return res.sendStatus(403)
   }
