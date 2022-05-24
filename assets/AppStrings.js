@@ -2,6 +2,7 @@ export const AppStrings = {
   "swagger-description": 'Production endpoints server',
   "some-error": "An error occurred",
 
+  "user-email-password-required": "Email and password are required",
   "user-not-found-err-msg": "User not found",
   "user-already-exists-err-msg": "User with email address already exists",
   "user-no-admin-access-err-msg": "Need admin access",

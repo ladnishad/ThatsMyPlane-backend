@@ -1,12 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import passport from "passport"
-import bodyparser from "body-parser";
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import dotenv from "dotenv";
 
 import PassportConfig from "./middlewares/auth"
+import credentials from "./middlewares/credentials"
 import { routes } from "./routes/appRoutes";
 import CorsOptions from "./config/corsOptions"
 import { createUsers } from "./migration/createUsers"
@@ -25,17 +25,16 @@ mongoose.connect(DB_LINK,{
   useUnifiedTopology: true
 })
 
-app.use(
-  bodyparser.urlencoded({
-    extended: true
-  })
-);
-
-app.use(bodyparser.json());
-
-app.use(cookieParser())
+app.use(credentials);
 
 app.use(cors(CorsOptions));
+
+// built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
+
+app.use(cookieParser())
 
 routes(app);
 

@@ -12,39 +12,40 @@ import { get as TokenGetters } from "./helpers"
 dotenv.config();
 
 export const SignUpUser = async(req, res) => {}
-export const LoginUser = async(req, res, next) => {
-  passport.authenticate("login", async(err, user, info) => {
-    try{
-      if(err || !user){
-        const error = new Error(AppStrings["some-error"])
-        return next(error)
-      }
 
-      req.login({user}, { session: false }, async(error) => {
-        if(error) {
-          return next(error)
-        }
+export const LoginUser = async (req, res) => {
+  console.log(`New login hit`);
 
-        const body = { _id: user.id, email: user.email }
+  console.log(req.body);
+  const { email, password } = req.body
 
-        const token = await TokenGetters.accessToken({ body })
-        const refreshToken = await TokenGetters.refreshToken({ body })
+  if(!email || !password) {
+    return res.status(400).json({ 'message': AppStrings["user-email-password-required"] });
+  }
 
-        const userOnDb = await UserGetters.userById({ userId: user._id })
-        const decodedRefreshToken = await jwt.verify(refreshToken, process.env.PASSPORT_LOCAL_REFRESH_SECRET)
+  const UserOnDb = await UserGetters.userByEmail({ email })
 
-        const addedRefreshToken = await RefreshTokenSetters.addRefreshTokenForUser({ userId: user._id, token: refreshToken, expiry: decodedRefreshToken.exp * 1000 })
+  if(!UserOnDb){
+    return res.sendStatus(404).json({ 'message': AppStrings["user-not-found-err-msg"]});
+  }
 
-        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000 })
-        res.json({ token })
+  const validPassword = await UserOnDb.isValidPassword(password)
+  if(validPassword){
+    const body = { _id: UserOnDb.id, email: UserOnDb.email }
+    const accessToken = await TokenGetters.accessToken({ body })
+    const refreshToken = await TokenGetters.refreshToken({ body })
 
-        return res
-      })
-    } catch(e){
-      return next(e)
-    }
-  })(req, res, next)
+    const decodedRefreshToken = await jwt.verify(refreshToken, process.env.PASSPORT_LOCAL_REFRESH_SECRET)
+    const addedRefreshToken = await RefreshTokenSetters.addRefreshTokenForUser({ userId: UserOnDb._id, token: refreshToken, expiry: decodedRefreshToken.exp * 1000 })
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000 })
+    res.json({ accessToken })
+
+    return res
+  }
+  return res.sendStatus(401)
 }
+
 export const RefreshUserToken = async(req, res) => {
   const { cookies } = req
 
@@ -64,7 +65,7 @@ export const RefreshUserToken = async(req, res) => {
 
   const body = { _id: userFromToken.id, email: userFromToken.email }
   const NewAccessToken = await TokenGetters.accessToken({ body })
-  res.json({ token: NewAccessToken })
+  res.json({ accessToken: NewAccessToken })
 
   return res
 }

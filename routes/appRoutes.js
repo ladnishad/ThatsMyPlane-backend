@@ -14,6 +14,7 @@ import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/Fl
 import { AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 import { NearByAirports } from "../controllers/airports/AirportsControllers"
+import { TestGetAPI, TestPostAPI } from "../controllers/testApi/TestApiControllers"
 import { AppStrings } from "../assets/AppStrings"
 
 dotenv.config();
@@ -34,9 +35,12 @@ export const routes = (app) => {
     })
   })
 
+  app.route("/test").get(TestGetAPI)
+  app.route("/test").post(TestPostAPI)
+
   app.route("/login").post(LoginUser)
 
-  app.route("refresh-token").get(RefreshUserToken)
+  app.route("/refresh-token").get(RefreshUserToken)
 
   app.route("/logout")
   .post(passport.authenticate('jwt', { session: false }), LogoutUser)
