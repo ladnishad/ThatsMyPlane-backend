@@ -6,7 +6,8 @@ import swaggerUi from "swagger-ui-express"
 
 import { SwaggerSpec } from "../swaggerConfig"
 import { RedisClientConnect } from "../redisConfig"
-import { LogoutUser } from "../controllers/users/UsersController"
+import verifyJWT from "../middlewares/verifyJWT"
+import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controllers/auth/AuthControllers"
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
 import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
@@ -27,60 +28,30 @@ export const routes = (app) => {
   // Public
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(SwaggerSpec))
 
-  app.post("/signup", passport.authenticate("signup", { session: false }), async(req, res, next) => {
-    res.json({
-      message: AppStrings["user-signup-successful"]
-    })
-  })
+  app.route("/signup").post(SignUpUser)
 
-  app.post("/login", async(req, res, next) => {
-    passport.authenticate("login", async(err, user, info) => {
-      try{
-        if(err || !user){
-          const error = new Error(AppStrings["some-error"])
-          return next(error)
-        }
+  app.route("/login").post(LoginUser)
 
-        req.login({user}, { session: false }, async(error) => {
-          if(error) {
-            return next(error)
-          }
+  app.route("/refresh-token").get(RefreshUserToken)
 
-          const body = { _id: user.id, email: user.email }
+  app.route("/logout").get(LogoutUser)
 
-          const token = await jwt.sign({ user: body }, process.env.PASSPORT_LOCAL_LOGIN_SECRET,{ expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRY}` })
-          const refreshToken = await jwt.sign({ user: body }, process.env.PASSPORT_LOCAL_REFRESH_SECRET,{ expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRY}` })
-
-          const userOnDb = await UserGetters.userById({ userId: user._id })
-          const decodedRefreshToken = await jwt.verify(refreshToken, process.env.PASSPORT_LOCAL_REFRESH_SECRET)
-
-          const addedRefreshToken = await RefreshTokenSetters.addRefreshTokenForUser({ userId: user._id, token: refreshToken, expiry: decodedRefreshToken.exp * 1000 })
-
-          return res.json({ token, refreshToken })
-        })
-      } catch(e){
-        return next(e)
-      }
-    })(req, res, next)
-  })
-
-  app.route("/logout")
-  .post(passport.authenticate('jwt', { session: false }), LogoutUser)
+  app.use(verifyJWT)
 
   app.route("/airlines")
-  .post(passport.authenticate('jwt', { session: false }), AddAirline)
+  .post(AddAirline)
 
   app.route("/search/flights")
-  .post(passport.authenticate('jwt', { session: false }), SearchFlights)
+  .post(SearchFlights)
 
   app.route("/flight/add")
-  .post(passport.authenticate('jwt', { session: false }), AddFlightToUserAccount)
+  .post(AddFlightToUserAccount)
 
   app.route("/aircraft/images")
-  .get(passport.authenticate('jwt', { session: false }), GetAircraftImage)
+  .get(GetAircraftImage)
 
   app.route("/airports/nearby")
-  .get(passport.authenticate('jwt', { session: false }), NearByAirports)
+  .get(NearByAirports)
 
   app.get("*", async(req, res) => {
     res.redirect('/docs')

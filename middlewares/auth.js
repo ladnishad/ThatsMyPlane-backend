@@ -24,6 +24,7 @@ const PassportConfig = (passport) => {
   // Local login
   passport.use("login", new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, async(email, password, done) => {
     try{
+      console.log(`Looking for user with ${email}`)
       const UserOnDb = await UserGetters.userByEmail({ email })
 
       if(!UserOnDb){
