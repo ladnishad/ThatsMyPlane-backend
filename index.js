@@ -16,7 +16,7 @@ import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
 
 dotenv.config();
 
-PassportConfig(passport)
+// PassportConfig(passport)
 const app = express();
 
 const DB_LINK = process.env.NODE_ENV === "production" ? process.env.PROD_DB_LINK : process.env.LOCAL_DB_LINK

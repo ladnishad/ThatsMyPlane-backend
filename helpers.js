@@ -1,3 +1,11 @@
+import mongoose from 'mongoose'
+
+export const convertStringIdToObjectId = async(id) => {
+  const convertedId = await mongoose.Types.ObjectId(id)
+
+  return convertedId
+}
+
 export const asyncForEach = async (arr, callback) => {
   for (let index = 0; index < arr.length; index += 1) {
     await callback(arr[index], index, arr);
