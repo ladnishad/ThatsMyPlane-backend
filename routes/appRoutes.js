@@ -10,6 +10,7 @@ import verifyJWT from "../middlewares/verifyJWT"
 import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controllers/auth/AuthControllers"
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
+import { GetUserProfilePrivate } from "../controllers/users/UsersController"
 import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
 import { AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
@@ -37,6 +38,9 @@ export const routes = (app) => {
   app.route("/logout").get(LogoutUser)
 
   app.use(verifyJWT)
+
+  app.route("/account")
+  .get(GetUserProfilePrivate)
 
   app.route("/airlines")
   .post(AddAirline)
