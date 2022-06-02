@@ -51,6 +51,10 @@ const ImageSchema = new Schema({
     type: Number,
     required: true,
   },
+  fileType: {
+    type: String,
+    required: true
+  },
   attached: {
       type: Boolean,
       default: false,

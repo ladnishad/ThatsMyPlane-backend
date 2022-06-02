@@ -2,6 +2,7 @@ export const AppStrings = {
   "swagger-description": 'Production endpoints server',
   "some-error": "An error occurred",
 
+  "user-id-param-required-err-msg": "User ID is required.",
   "user-email-password-required": "Email and password are required",
   "user-not-found-err-msg": "User not found",
   "user-already-exists-err-msg": "User with email address already exists",
@@ -26,4 +27,6 @@ export const AppStrings = {
   "aircraft-registration-invalid-err-msg": "Invalid aircraft registration code",
   "aircraft-ICAO-invalid-err-msg": "Invalid aircraft ICAO code",
   "aircraft-IATA-invalid-err-msg": "Invalid aircraft IATA code",
+
+  "image-not-found-err-msg": "Image not found"
 }
