@@ -37,6 +37,10 @@ export const routes = (app) => {
 
   app.route("/logout").get(LogoutUser)
 
+  app.get("*", async(req, res) => {
+    res.redirect('/docs')
+  })
+  
   app.use(verifyJWT)
 
   app.route("/account")
@@ -56,8 +60,4 @@ export const routes = (app) => {
 
   app.route("/airports/nearby")
   .get(NearByAirports)
-
-  app.get("*", async(req, res) => {
-    res.redirect('/docs')
-  })
 }
