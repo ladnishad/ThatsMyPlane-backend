@@ -13,6 +13,10 @@ const ImageSchema = new Schema({
     enum: ["profile", "aircraft"],
     required: true
   },
+  caption: {
+    type: String,
+    default: ""
+  },
   aircraftId: {
     type: String,
     required: function () { return this.imageType === "aircraft" }
