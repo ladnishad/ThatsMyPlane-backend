@@ -28,5 +28,10 @@ export const AppStrings = {
   "aircraft-ICAO-invalid-err-msg": "Invalid aircraft ICAO code",
   "aircraft-IATA-invalid-err-msg": "Invalid aircraft IATA code",
 
-  "image-not-found-err-msg": "Image not found"
+  "image-id-param-required-err-msg": "Image ID is required.",
+  "image-not-found-err-msg": "Image not found",
+  "image-upload-failed-err-msg": "Image upload failed",
+  "no-image-details-err-msg": "Image details not found",
+  "no-file-to-upload-err-msg": "No file attached to be uploaded",
+  "no-image-to-delete-err-msg": "No image selected to be deleted"
 }

@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import mongoose from "mongoose"
+import axios from "axios";
 import dotenv from "dotenv";
 
 import { AppStrings } from "../../assets/AppStrings"
@@ -90,6 +91,23 @@ const AWSAccessHelpers = {
 }
 
 export const get = {
+  imageById: async({ userId, imageId }) => {
+    if(!userId){
+      throw new Error(AppStrings["user-id-param-required-err-msg"])
+    }
+
+    if(!imageId){
+      throw new Error(AppStrings["image-id-param-required-err-msg"])
+    }
+    try {
+      const ObjectImageId = await convertStringIdToObjectId(imageId)
+      const ImageByIdOnDb = await Image.findOne({ _id: ObjectImageId }).exec()
+
+      return ImageByIdOnDb
+    } catch(e){
+      return e
+    }
+  },
   filteredImage: async ({ userId, filters }) => {
     if(!userId){
       throw new Error(AppStrings["user-id-param-required-err-msg"])
@@ -150,4 +168,94 @@ export const get = {
   }
 }
 
-export const set = {}
+export const set = {
+  createImageOnDb: async ({ userId, ImageDetails }) => {
+    if(!userId){
+      throw new Error(AppStrings["user-id-param-required-err-msg"])
+    }
+
+    try {
+      const ImageToBeSavedOnDb = new Image({ userId, ...ImageDetails })
+
+      const SavedImageOnDb = await ImageToBeSavedOnDb.save()
+
+      return SavedImageOnDb
+    } catch(e){
+      return e
+    }
+  },
+  uploadImage: async ({ userId, ImageDetails, file }) => {
+    if(!userId){
+      throw new Error(AppStrings["user-id-param-required-err-msg"])
+    }
+
+    if(!ImageDetails){
+      throw new Error(AppStrings["no-image-details-err-msg"])
+    }
+
+    if(!file){
+      throw new Error(AppStrings["no-file-to-upload-err-msg"])
+    }
+
+    try {
+      // Create an entry for the image on the database
+      const ImageEntryOnDb = await set.createImageOnDb({ userId, ImageDetails })
+
+      if(!ImageEntryOnDb){
+        throw new Error(AppStrings["image-upload-failed-err-msg"])
+      }
+      // Get the upload url from aws access helpers
+      const ImageWithUploadUrl = await AWSAccessHelpers.getUrlForUpload({ imageFromDatabase: ImageEntryOnDb })
+
+      if(!ImageWithUploadUrl){
+        throw new Error(AppStrings["image-upload-failed-err-msg"])
+      }
+
+      const { uploadUrl } = ImageWithUploadUrl
+      // Make an axios request with the image details to the url
+      const fileUpload = await axios.put(uploadUrl, file, { headers: { "Content-Type": file.type } })
+
+      if(fileUpload.status !== 200){
+        throw new Error(AppStrings["image-upload-failed-err-msg"])
+      }
+      // Update image entry on database with uploaded: true, attached: true (attached to the user, aircraft)
+      ImageEntryOnDb.uploaded = true
+      ImageEntryOnDb.attached = true
+
+      const ImageUploadedSaved = await ImageEntryOnDb.save()
+      // Return image entry on database with signed/downloadUrl
+      const ImageWithDownloadUrl = await AWSAccessHelpers.getUrlForDownload({ imageFromDatabase: ImageUploadedSaved })
+
+      return ImageWithDownloadUrl
+    } catch(e){
+      return e
+    }
+
+  },
+  deleteImage: async ({ userId, imageId }) => {
+    if(!userId){
+      throw new Error(AppStrings["user-id-param-required-err-msg"])
+    }
+
+    if(!imageId){
+      throw new Error(AppStrings["no-image-to-delete-err-msg"])
+    }
+
+    try {
+      // Find image on db
+      const ImageOnDb = await get.imageById({ userId, imageId})
+
+      if(!ImageOnDb){
+        throw new Error(AppStrings["image-not-found-err-msg"])
+      }
+      // Delete image from spaces using AWSAccessHelpers
+      const imageDeletedFromSpaces = await AWSAccessHelpers.deleteFromSpaces({ imageFromDatabase: ImageOnDb })
+      // Delete image from database
+      const imageDeletedFromDb = await Image.deleteOne({ _id: ImageOnDb._id }).exec()
+
+      return true
+    } catch(e){
+      return e
+    }
+  }
+}
