@@ -37,27 +37,25 @@ export const routes = (app) => {
 
   app.route("/logout").get(LogoutUser)
 
+  app.route("/account")
+  .get(verifyJWT, GetUserProfilePrivate)
+
+  app.route("/airlines")
+  .post(verifyJWT, AddAirline)
+
+  app.route("/search/flights")
+  .post(verifyJWT, SearchFlights)
+
+  app.route("/flight/add")
+  .post(verifyJWT, AddFlightToUserAccount)
+
+  app.route("/aircraft/images")
+  .get(verifyJWT, GetAircraftImage)
+
+  app.route("/airports/nearby")
+  .get(verifyJWT, NearByAirports)
+
   app.get("*", async(req, res) => {
     res.redirect('/docs')
   })
-  
-  app.use(verifyJWT)
-
-  app.route("/account")
-  .get(GetUserProfilePrivate)
-
-  app.route("/airlines")
-  .post(AddAirline)
-
-  app.route("/search/flights")
-  .post(SearchFlights)
-
-  app.route("/flight/add")
-  .post(AddFlightToUserAccount)
-
-  app.route("/aircraft/images")
-  .get(GetAircraftImage)
-
-  app.route("/airports/nearby")
-  .get(NearByAirports)
 }
