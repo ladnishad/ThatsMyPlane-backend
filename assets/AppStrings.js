@@ -3,6 +3,7 @@ export const AppStrings = {
   "some-error": "An error occurred",
 
   "user-id-param-required-err-msg": "User ID is required.",
+  "user-signup-fields-required": "Please enter all sign up fields",
   "user-email-password-required": "Email and password are required",
   "user-not-found-err-msg": "User not found",
   "user-already-exists-err-msg": "User with email address already exists",

@@ -11,8 +11,8 @@ import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controll
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
 import { GetUserProfilePrivate } from "../controllers/users/UsersController"
-import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
-import { AddAirline } from "../controllers/airlines/AirlinesControllers"
+import { SearchFlights, SearchFlightsByRegistration, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
+import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 import { NearByAirports } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
@@ -42,9 +42,13 @@ export const routes = (app) => {
 
   app.route("/airlines")
   .post(verifyJWT, AddAirline)
+  .get(verifyJWT, GetAirlines)
 
-  app.route("/search/flights")
+  app.route("/search/flight")
   .post(verifyJWT, SearchFlights)
+
+  app.route("/search/aircraft")
+  .post(verifyJWT, SearchFlightsByRegistration)
 
   app.route("/flight/add")
   .post(verifyJWT, AddFlightToUserAccount)

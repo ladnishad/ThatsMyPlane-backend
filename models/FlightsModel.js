@@ -18,17 +18,19 @@ const FlightsSchema = new Schema({
   },
   flightNumber: {
     type: String,
-    required: true
+    default: ""
   },
   flightDate: {
     type: Number,
     default: 0
   },
   flightOriginAirportId: {
-    type: String
+    type: String,
+    default: ""
   },
   flightDestinationAirportId: {
-    type: String
+    type: String,
+    default: ""
   }
 })
 

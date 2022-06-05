@@ -26,11 +26,11 @@ export const get = {
 
     const flightsWithThisFlightNumberOnFlightDate = flightsWithThisFlightNumberAPIData.data.flights.filter((flight) => dayjs(flight.scheduled_out).isSame(flightDate, "day"))
 
-    const flightsInformation = await asyncMap(flightsWithThisFlightNumberOnFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator, operator_iata, progress_percent }) => {
+    const flightsInformation = await asyncMap(flightsWithThisFlightNumberOnFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
       return {
         flightNumber,
         flightDate,
-        airlineICAO: operator,
+        airlineICAO: operator_icao,
         airlineIATA: operator_iata,
         aircraftRegistration: registration,
         aircraftType: aircraft_type,
@@ -45,6 +45,21 @@ export const get = {
 
     return flightsInformation
   },
+
+  aircraftByRegistrationNumber: async({ registrationNumber }) => {
+    const aircraftWithRegistrationNumAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${registrationNumber.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
+
+    if(aircraftWithRegistrationNumAPIData.length){
+      const { aircraft_type, operator_icao, operator_iata } = aircraftWithRegistrationNumAPIData.pop()
+
+      const flightsInformation = {
+        aircraftRegistration: registrationNumber,
+        aircraftType: aircraft_type,
+        airlineICAO: operator_icao,
+        airlineIATA: operator_iata
+      }
+    }
+  }
 }
 
 export const set = {
@@ -63,37 +78,40 @@ export const set = {
       throw new Error(AppStrings["airline-not-supported-err-msg"])
     }
 
-    const originAirport = await airportGetters.airport({ airportICAO: originICAO })
-
-    const destinationAirport = await airportGetters.airport({ airportICAO: destinationICAO })
-
-    if(!originAirport || !destinationAirport){
-      throw new Error(AppStrings["airport-not-supported-err-msg"])
-    }
-
-    let aircraft = await aircraftGetters.aircraft({ aircraftRegistration })
-    if(!aircraft){
-        aircraft = await aircraftSetters.createAircraft({ aircraftRegistration, aircraftType})
-    }
-
-    let flightDateToAdd = 0
-
-    if(scheduledOut){
-      flightDateToAdd = dayjs(scheduledOut).valueOf()
-    }
-    if(flightDate){
-      flightDateToAdd = dayjs(flightDate).valueOf()
+    let aircraftOnDb = await aircraftGetters.aircraft({ aircraftRegistration })
+    if(!aircraftOnDb){
+        aircraftOnDb = await aircraftSetters.createAircraft({ aircraftRegistration, aircraftType, airlineICAO })
     }
 
     const FlightToAddForUser = new Flight({
       userId,
       airlineId: airline._id,
-      aircraftId: aircraft._id,
-      flightNumber,
-      flightDate: flightDateToAdd,
-      flightOriginAirportId: originAirport._id,
-      flightDestinationAirportId: destinationAirport._id
+      aircraftId: aircraftOnDb._id
     })
+
+    if(flightNumber){
+      FlightToAddForUser.flightNumber = flightNumber
+    }
+
+    if(scheduledOut){
+      FlightToAddForUser.flightDate = dayjs(scheduledOut).valueOf()
+    }
+
+    if(originICAO){
+      const originAirport = await airportGetters.airport({ airportICAO: originICAO })
+
+      if(originAirport){
+        FlightToAddForUser.flightOriginAirportId = originAirport.id
+      }
+    }
+
+    if(destinationICAO){
+      const destinationAirport = await airportGetters.airport({ airportICAO: destinationICAO })
+
+      if(destinationAirport){
+        FlightToAddForUser.flightDestinationAirportId = destinationAirport.id
+      }
+    }
 
     try{
       const FlightAddedForUser = await FlightToAddForUser.save()

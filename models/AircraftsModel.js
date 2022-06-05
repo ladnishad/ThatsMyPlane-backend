@@ -29,6 +29,10 @@ const AircraftsSchema = new Schema({
   aircraftTypeId: {
     type: String,
     required: true
+  },
+  airlineId: {
+    type: String,
+    default: ''
   }
 })
 

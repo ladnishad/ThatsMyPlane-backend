@@ -13,7 +13,7 @@ dotenv.config();
 
 export const SignUpUser = async(req, res) => {
     const { firstName, lastName, email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ 'message': AppStrings["user-email-password-required"] });
+    if (!firstName || !lastName || !email || !password) return res.status(400).json({ 'message': AppStrings["user-signup-fields-required"] });
 
     // check for duplicate usernames in the db
     const duplicate = await UserGetters.userByEmail({ email })

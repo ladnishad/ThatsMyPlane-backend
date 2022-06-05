@@ -24,6 +24,24 @@ export const SearchFlights = async(req, res) => {
   }
 }
 
+export const SearchFlightsByRegistration = async(req, res) => {
+  const { registrationNumber } = req.body
+
+  try{
+    const aircraftOnDb = await aircraftGetters.aircraft({ aircraftRegistration: registrationNumber })
+
+    if(aircraftOnDb !== null){
+      return aircraftOnDb
+    }
+
+    const aircraftFromApi = await flightGetters.aircraftByRegistrationNumber({ registrationNumber })
+
+    res.send(aircraftFromApi)
+  } catch(e){
+    res.send(e)
+  }
+}
+
 export const AddFlightToUserAccount = async(req, res) => {
   const { userId, flightInformation } = req.body
 

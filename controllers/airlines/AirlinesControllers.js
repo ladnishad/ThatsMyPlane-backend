@@ -1,7 +1,12 @@
 import { User } from "../../models/UsersModel"
 import { Airline } from "../../models/AirlinesModel"
+import { get as AirlineGetters } from "./helpers"
 import { AppStrings } from "../../assets/AppStrings"
 
+export const GetAirlines = async (req, res) => {
+  const allAirlines = await AirlineGetters.airlines()
+  res.send(allAirlines)
+}
 export const AddAirline = async(req, res) => {
   const { userId, admin, IATA, ICAO, name, country } = req.body
 
