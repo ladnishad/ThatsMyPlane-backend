@@ -21,12 +21,12 @@ dotenv.config();
 export const get = {
   flightDateDayJsObject: ({ flightDate }) => dayjs(flightDate).toISOString(),
 
-  flightsOnFlightDate: async({ flightNumber, flightDate }) => {
-    const flightsWithThisFlightNumberAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${flightNumber.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
+  flightsOnFlightDateWithIdent: async({ flightIdent, flightDate }) => {
+    const flightsWithThisIdentAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${flightIdent.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
 
-    const flightsWithThisFlightNumberOnFlightDate = flightsWithThisFlightNumberAPIData.data.flights.filter((flight) => dayjs(flight.scheduled_out).isSame(flightDate, "day"))
+    const flightsWithThisFlightIdentOnFlightDate = flightsWithThisFlighIdentAPIData.data.flights.filter((flight) => dayjs(flight.scheduled_out).isSame(flightDate, "day"))
 
-    const flightsInformation = await asyncMap(flightsWithThisFlightNumberOnFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
+    const flightsInformation = await asyncMap(flightsWithThisFlightIdentFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
       return {
         flightNumber,
         flightDate,
@@ -45,21 +45,6 @@ export const get = {
 
     return flightsInformation
   },
-
-  aircraftByRegistrationNumber: async({ registrationNumber }) => {
-    const aircraftWithRegistrationNumAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${registrationNumber.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
-
-    if(aircraftWithRegistrationNumAPIData.length){
-      const { aircraft_type, operator_icao, operator_iata } = aircraftWithRegistrationNumAPIData.pop()
-
-      const flightsInformation = {
-        aircraftRegistration: registrationNumber,
-        aircraftType: aircraft_type,
-        airlineICAO: operator_icao,
-        airlineIATA: operator_iata
-      }
-    }
-  }
 }
 
 export const set = {

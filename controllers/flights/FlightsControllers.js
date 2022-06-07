@@ -9,13 +9,13 @@ import { get as userGetters } from "../users/helpers"
 
 dotenv.config();
 
-export const SearchFlights = async(req, res) => {
+export const SearchFlightsbyFlightNumber = async(req, res) => {
   const { flightNumber, flightDate } = req.body
 
   try{
     const flightDateDayJsObject = await flightGetters.flightDateDayJsObject({ flightDate })
 
-    const flightsForFlightNumberOnFlightDate = await flightGetters.flightsOnFlightDate({ flightNumber, flightDate: flightDateDayJsObject })
+    const flightsForFlightNumberOnFlightDate = await flightGetters.flightsOnFlightDateWithIdent({ flightIdent: flightNumber, flightDate: flightDateDayJsObject })
 
     res.send(flightsForFlightNumberOnFlightDate)
 
@@ -25,7 +25,7 @@ export const SearchFlights = async(req, res) => {
 }
 
 export const SearchFlightsByRegistration = async(req, res) => {
-  const { registrationNumber } = req.body
+  const { registrationNumber, flightDate } = req.body
 
   try{
     const aircraftOnDb = await aircraftGetters.aircraft({ aircraftRegistration: registrationNumber })
@@ -33,10 +33,15 @@ export const SearchFlightsByRegistration = async(req, res) => {
     if(aircraftOnDb !== null){
       return aircraftOnDb
     }
+    const flightDateDayJsObject = await flightGetters.flightDateDayJsObject({ flightDate })
+    const flightsForRegistrationOnFlightDate = await flightGetters.flightsOnFlightDateWithIdent({ flightIdent: registrationNumber, flightDate: flightDateDayJsObject })
 
-    const aircraftFromApi = await flightGetters.aircraftByRegistrationNumber({ registrationNumber })
-
-    res.send(aircraftFromApi)
+    // Add the aircraft to the database if there is a result
+    if(flightsForRegistrationOnFlightDate.length){
+      const aircraftDetails = flightsForRegistrationOnFlightDate.pop()
+      const SavedAircraft = await aircraftSetters({ aircraftRegistration: aircraftDetails.aircraftRegistration, aircraftType: aircraftDetails.aircraftType, airlineICAO: aircraftDetails.airlineICAO })
+    }
+    res.send(flightsForRegistrationOnFlightDate)
   } catch(e){
     res.send(e)
   }
