@@ -1,5 +1,5 @@
 # ThatsMyPlane backend
-Backend for the TrackMyFlights app repository
+Backend for the ThatsMyPlane project
 
 Project name: thatsmyplane
 
