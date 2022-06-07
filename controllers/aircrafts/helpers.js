@@ -59,6 +59,15 @@ export const get = {
     })
 
     return aircraftImageResponse
+  },
+  aircraftTypes: async ({ filters }) => {
+    if(!filters){
+      const AircraftTypesOnDb = await AircraftType.find({}).exec()
+      return AircraftTypesOnDb
+    }
+
+    const AircraftTypesOnDb = await AircraftType.find({ ...filters }).exec()
+    return AircraftTypesOnDb
   }
 }
 

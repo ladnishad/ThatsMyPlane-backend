@@ -20,3 +20,15 @@ export const GetAircraftImage = async(req, res) => {
     res.send(e)
   }
 }
+
+export const GetAircraftTypes = async(req, res) => {
+  const { filters } = req.body
+
+  try {
+    const AircraftTypesOnDb = await aircraftGetters.aircraftTypes({ filters })
+
+    res.send(AircraftTypesOnDb)
+  } catch(e){
+    res.send(e)
+  }
+}

@@ -13,8 +13,8 @@ import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../contr
 import { GetUserProfilePrivate } from "../controllers/users/UsersController"
 import { SearchFlights, SearchFlightsByRegistration, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
 import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
-import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
-import { NearByAirports } from "../controllers/airports/AirportsControllers"
+import { GetAircraftTypes, GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
+import { GetAirports, NearByAirports } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
 
 dotenv.config();
@@ -55,6 +55,12 @@ export const routes = (app) => {
 
   app.route("/aircraft/images")
   .get(verifyJWT, GetAircraftImage)
+
+  app.route("/aircraft/types")
+  .get(verifyJWT, GetAircraftTypes)
+
+  app.route("/airports")
+  .get(verifyJWT, GetAirports)  
 
   app.route("/airports/nearby")
   .get(verifyJWT, NearByAirports)

@@ -19,3 +19,15 @@ export const NearByAirports = async(req, res) => {
     res.send(e)
   }
 }
+
+export const GetAirports = async(req, res) => {
+  const { filters } = req.body
+
+  try {
+    const AirportsOnDb = await airportGetters.airports({ filters })
+
+    res.send(AirportsOnDb)
+  } catch(e){
+    res.send(e)
+  }
+}
