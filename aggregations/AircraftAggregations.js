@@ -9,21 +9,45 @@ const AircraftAllDetailsAggregation = async({ aircraftId }) => {
       '$match': {
         '_id': AircraftObjectId
       }
-    }, {
+    },
+    {
+      '$project': {
+        '_id': 1,
+        'registrationNum': 1,
+        'aircraftTypeId': {
+          '$toObjectId': '$aircraftTypeId'
+        },
+        'airlineId': {
+          '$toObjectId': 'airlineId'
+        }
+      }
+    },
+    {
       '$lookup': {
         'from': 'aircrafttypes',
         'localField': 'aircraftTypeId',
         'foreignField': '_id',
         'as': 'aircraftType'
       }
-    }, {
+    },
+    {
+      '$unwind': {
+        'path': '$aircraftType'
+      }
+    },
+    {
       '$lookup': {
-        'from': 'airlines', 
+        'from': 'airlines',
         'localField': 'airlineId',
         'foreignField': '_id',
         'as': 'airline'
       }
-    }
+    },
+    {
+      '$unwind': {
+        'path': '$airline'
+      }
+    },
   ]
 
   try{
