@@ -51,22 +51,10 @@ export const AircraftAggregations = {
       },
       {
         '$project': {
-          '_id': 1,
-          'registrationNum': 1,
-          'aircraftTypeId': {
-            "$toString": "$aircraftTypeId"
-          },
-          'aircraftTypeICAO': "$aircraftType.ICAO",
-          'aircraftTypeIATA': "$aircraftType.IATA",
-          'aicraftModel': "$aircraftType.model",
-          'airlineId': {
-            "$toString": "$airline._id"
-          },
-          'airlineICAO': "$airline.ICAO",
-          'airlineIATA': "$airline.IATA",
-          'airlineName': "$airline.name",
-          'airlineCountry': "$airline.country",
-          'airlineActiveStatus': "$airline.active",
+            '_id': 1,
+            'registrationNum': 1,
+            'aircraftType': 1,
+            'airline': 1
         }
       }
     ]
