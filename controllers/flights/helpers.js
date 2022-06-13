@@ -23,13 +23,12 @@ export const get = {
 
   flightsOnFlightDateWithIdent: async({ flightIdent, flightDate }) => {
     const flightsWithThisIdentAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/flights/${flightIdent.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY } })
+    const flightsWithThisFlightIdentOnFlightDate = flightsWithThisIdentAPIData.data.flights.filter((flight) => dayjs(flight.scheduled_out).isSame(flightDate, "day"))
 
-    const flightsWithThisFlightIdentOnFlightDate = flightsWithThisFlighIdentAPIData.data.flights.filter((flight) => dayjs(flight.scheduled_out).isSame(flightDate, "day"))
-
-    const flightsInformation = await asyncMap(flightsWithThisFlightIdentFlightDate, async({ registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
+    const flightsInformation = await asyncMap(flightsWithThisFlightIdentOnFlightDate, async({ flight_number, registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
       return {
-        flightNumber,
-        flightDate,
+        flightNumber: flight_number,
+        flightDate: dayjs(scheduled_out).valueOf(),
         airlineICAO: operator_icao,
         airlineIATA: operator_iata,
         aircraftRegistration: registration,
@@ -42,7 +41,7 @@ export const get = {
         progressPercent: progress_percent
       }
     })
-
+    
     return flightsInformation
   },
 }

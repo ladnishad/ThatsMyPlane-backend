@@ -57,7 +57,7 @@ export const routes = (app) => {
   .post(verifyJWT, AddFlightToUserAccount)
 
   app.route("/aircraft/images")
-  .get(verifyJWT, GetAircraftImage)
+  .post(verifyJWT, GetAircraftImage)
 
   app.route("/aircraft/types")
   .get(verifyJWT, GetAircraftTypes)

@@ -32,14 +32,11 @@ export const SearchFlightsByRegistration = async(req, res) => {
   try{
     const aircraftOnDb = await aircraftGetters.aircraft({ aircraftRegistration: registrationNumber })
 
-    if(aircraftOnDb !== null){
-      return aircraftOnDb
-    }
     const flightDateDayJsObject = await flightGetters.flightDateDayJsObject({ flightDate })
     const flightsForRegistrationOnFlightDate = await flightGetters.flightsOnFlightDateWithIdent({ flightIdent: registrationNumber, flightDate: flightDateDayJsObject })
 
     // Add the aircraft to the database if there is a result
-    if(flightsForRegistrationOnFlightDate.length){
+    if(flightsForRegistrationOnFlightDate.length && aircraftOnDb === null){
       const aircraftDetails = flightsForRegistrationOnFlightDate.pop()
       const SavedAircraft = await aircraftSetters.createAircraft({ aircraftRegistration: aircraftDetails.aircraftRegistration, aircraftType: aircraftDetails.aircraftType, airlineICAO: aircraftDetails.airlineICAO })
     }
