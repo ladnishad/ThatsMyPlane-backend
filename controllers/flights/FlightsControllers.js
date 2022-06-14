@@ -47,10 +47,10 @@ export const SearchFlightsByRegistration = async(req, res) => {
 }
 
 export const AddFlightToUserAccount = async(req, res) => {
-  const { userId, flightInformation } = req.body
+  const { userId, flightInformation, fromApi } = req.body
 
   try{
-    const UserFlight = await flightSetters.addUserFlight({ userId, userFlight: flightInformation })
+    const UserFlight = await flightSetters.addUserFlight({ userId, userFlight: flightInformation, fromApi })
     res.send(UserFlight)
   } catch(e){
     res.send(e)
