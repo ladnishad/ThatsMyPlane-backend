@@ -10,12 +10,9 @@ import { get as userGetters } from "../users/helpers"
 dotenv.config();
 
 export const GetAircraftImage = async(req, res) => {
-  console.log("Received req");
   const { aircraftRegistration } = req.body
-  console.log(`reg is ${aircraftRegistration}`);
   try{
     const aircraftImages = await aircraftGetters["aircraft.images"]({ aircraftRegistration })
-    console.log(aircraftImages);
     res.send(aircraftImages)
   } catch(e){
     console.log(e);

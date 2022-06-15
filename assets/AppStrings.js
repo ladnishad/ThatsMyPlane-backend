@@ -29,6 +29,8 @@ export const AppStrings = {
   "aircraft-ICAO-invalid-err-msg": "Invalid aircraft ICAO code",
   "aircraft-IATA-invalid-err-msg": "Invalid aircraft IATA code",
 
+  "flight-already-added-err-msg": "Flight already exists in your collection",
+
   "image-id-param-required-err-msg": "Image ID is required.",
   "image-not-found-err-msg": "Image not found",
   "image-upload-failed-err-msg": "Image upload failed",
