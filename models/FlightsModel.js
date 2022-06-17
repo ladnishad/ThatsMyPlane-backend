@@ -31,6 +31,15 @@ const FlightsSchema = new Schema({
   flightDestinationAirportId: {
     type: String,
     default: ""
+  },
+  caption: {
+    type: String,
+    default: ""
+  },
+  visibility: {
+    type: String,
+    enum: ["Private", "Friends", "Public"],
+    default: "Private"
   }
 })
 

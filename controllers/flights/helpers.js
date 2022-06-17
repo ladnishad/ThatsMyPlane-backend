@@ -73,14 +73,14 @@ export const get = {
 }
 
 export const set = {
-  addUserFlight: async({ userId, userFlight }) => {
+  addUserFlight: async({ userId, userFlight, caption, visibility, fromApi }) => {
     const user = await User.findById(userId).exec()
 
     if(!user){
       throw new Error(AppStrings["user-not-found-err-msg"])
     }
 
-    let { airlineIATA, airlineICAO, aircraftRegistration, aircraftType, originICAO, destinationICAO, scheduledOut, flightNumber, fromApi } = userFlight
+    let { airlineIATA, airlineICAO, aircraftRegistration, aircraftType, originICAO, destinationICAO, scheduledOut, flightNumber } = userFlight
 
     if(!fromApi){
       const aircraftInformation = await get.flightWithFlightIdent({ flightIdent: aircraftRegistration })
@@ -115,7 +115,9 @@ export const set = {
     const FlightToAddForUser = new Flight({
       userId,
       airlineId: airline._id,
-      aircraftId: aircraftOnDb._id
+      aircraftId: aircraftOnDb._id,
+      caption,
+      visibility
     });
 
     if(flightNumber){
