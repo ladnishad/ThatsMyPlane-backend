@@ -11,7 +11,7 @@ import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controll
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
 import { GetUserProfilePrivate } from "../controllers/users/UsersController"
-import { SearchFlightsbyFlightNumber, SearchFlightsByRegistration, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
+import { SearchFlightsbyFlightNumber, SearchFlightsByRegistration, AddFlightToUserAccount, UserAircrafts } from "../controllers/flights/FlightsControllers"
 import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftTypes, GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
 import { GetAirports, NearByAirports } from "../controllers/airports/AirportsControllers"
@@ -67,6 +67,9 @@ export const routes = (app) => {
 
   app.route("/airports/nearby")
   .get(verifyJWT, NearByAirports)
+
+  app.route("/user/aircrafts")
+  .post(verifyJWT, UserAircrafts)
 
   app.get("*", async(req, res) => {
     res.redirect('/docs')

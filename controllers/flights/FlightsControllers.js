@@ -8,6 +8,7 @@ import { get as aircraftGetters, set as aircraftSetters } from "../aircrafts/hel
 import { get as userGetters } from "../users/helpers"
 
 import { FlightAggregations } from "../../aggregations/FlightAggregations"
+import { UserAggregations } from "../../aggregations/UserAggregations"
 
 dotenv.config();
 
@@ -65,5 +66,23 @@ export const FlightsDetailsForUser = async (req, res) => {
     res.send(FlightsForUser)
   } catch(e){
     res.send(e)
+  }
+}
+
+export const UserAircrafts = async(req, res) => {
+  const { userId } = req.body
+
+  try{
+    const FlightsForUser = await UserAggregations.getAllUserFlightsByAircraftTypes({ userId })
+    // console.log(FlightsForUser);
+
+    // const FlightsByAircraft = {}
+    //
+    // await asyncForEach(FlightsForUser, async(flightForUser) => {
+    //
+    // })
+    res.send(FlightsForUser)
+  } catch(e){
+    console.log(e);
   }
 }
