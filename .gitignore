@@ -3,3 +3,4 @@ dataSources/
 config/allowedOrigins.js
 .env
 dockerBuildSteps.txt
+migration/PersonalHistoricFlights.js
