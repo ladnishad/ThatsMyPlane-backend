@@ -30,6 +30,7 @@ export const AppStrings = {
   "aircraft-IATA-invalid-err-msg": "Invalid aircraft IATA code",
 
   "flight-already-added-err-msg": "Flight already exists in your collection",
+  "flight-add-fail-no-reg-err-msg": "Manual entry for flight can't be done without the registration number",
 
   "image-id-param-required-err-msg": "Image ID is required.",
   "image-not-found-err-msg": "Image not found",

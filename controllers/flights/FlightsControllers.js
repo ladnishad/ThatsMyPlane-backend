@@ -51,7 +51,7 @@ export const AddFlightToUserAccount = async(req, res) => {
   const { userId, flightInformation, caption, visibility, fromApi } = req.body
 
   try{
-    const UserFlight = await flightSetters.addUserFlight({ userId, userFlight: flightInformation, caption, visibility, fromApi })
+    const UserFlight = await flightSetters.newAddUserFlight({ userId, userFlight: flightInformation, caption, visibility, fromApi })
     res.send(UserFlight)
   } catch(e){
     res.send(e)
