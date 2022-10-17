@@ -9,7 +9,7 @@ import { Image } from "../../models/ImagesModel"
 
 import { get as UserGetters, set as UserSetters } from "../users/helpers"
 
-import { asyncMap, convertStringIdToObjectId } from "../../helpers"
+import { asyncMap } from "../../helpers"
 
 dotenv.config();
 
@@ -100,8 +100,7 @@ export const get = {
       throw new Error(AppStrings["image-id-param-required-err-msg"])
     }
     try {
-      const ObjectImageId = await convertStringIdToObjectId(imageId)
-      const ImageByIdOnDb = await Image.findOne({ _id: ObjectImageId }).exec()
+      const ImageByIdOnDb = await Image.findOne({ _id: imageId }).exec()
 
       return ImageByIdOnDb
     } catch(e){

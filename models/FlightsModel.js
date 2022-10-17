@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 const { Schema, model } = mongoose
 
 const FlightsSchema = new Schema({
+  _id: String,
   userId: {
     type: String,
     required: true
@@ -41,6 +42,13 @@ const FlightsSchema = new Schema({
     enum: ["Private", "Friends", "Public"],
     default: "Private"
   }
+})
+
+FlightsSchema.pre("save", async function(next) {
+  const _id = mongoose.Types.ObjectId()
+  this._id = _id
+  
+  next()
 })
 
 export const Flight = model("Flights", FlightsSchema)

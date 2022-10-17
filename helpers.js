@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 
+// Not needed anymore
 export const convertStringIdToObjectId = async(id) => {
   const convertedId = await mongoose.Types.ObjectId(id)
 
