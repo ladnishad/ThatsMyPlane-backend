@@ -3,24 +3,19 @@ import { convertStringIdToObjectId } from "../helpers"
 
 export const AircraftAggregations = {
   "AircraftAllDetailsAggregation": async({ aircraftId }) => {
-    const AircraftObjectId = await convertStringIdToObjectId(aircraftId)
 
     const pipeline = [
       {
         '$match': {
-          '_id': AircraftObjectId
+          '_id': aircraftId
         }
       },
       {
         '$project': {
           '_id': 1,
           'registrationNum': 1,
-          'aircraftTypeId': {
-            '$toObjectId': '$aircraftTypeId'
-          },
-          'airlineId': {
-            '$toObjectId': '$airlineId'
-          }
+          'aircraftTypeId': 1,
+          'airlineId': 1,
         }
       },
       {

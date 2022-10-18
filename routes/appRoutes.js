@@ -14,7 +14,7 @@ import { GetUserProfilePrivate } from "../controllers/users/UsersController"
 import { SearchFlightsbyFlightNumber, SearchFlightsByRegistration, AddFlightToUserAccount, UserAircrafts } from "../controllers/flights/FlightsControllers"
 import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
 import { GetAircraftTypes, GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
-import { GetAirports, NearByAirports } from "../controllers/airports/AirportsControllers"
+import { GetAirports, NearByAirports, SearchAirport } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
 
 dotenv.config();
@@ -68,6 +68,9 @@ export const routes = (app) => {
   app.route("/airports/nearby")
   .get(verifyJWT, NearByAirports)
 
+  app.route("/search/airports")
+  .post(verifyJWT, SearchAirport)
+  
   app.route("/user/aircrafts")
   .post(verifyJWT, UserAircrafts)
 

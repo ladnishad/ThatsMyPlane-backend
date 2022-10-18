@@ -6,22 +6,11 @@ export const FlightAggregations = {
     const pipeline = [
       {
         '$project': {
-          '_id': 1,
-          'userId': {
-            '$toObjectId': '$userId'
-          },
-          'airlineId': {
-            '$toObjectId': '$airlineId'
-          },
-          'aircraftId': {
-            '$toObjectId': '$aircraftId'
-          },
-          'flightOriginAirportId': {
-            '$toObjectId': '$flightOriginAirportId'
-          },
-          'flightDestinationAirportId': {
-            '$toObjectId': '$flightDestinationAirportId'
-          },
+          'userId': 1,
+          'airlineId': 1,
+          'aircraftId': 1,
+          'flightOriginAirportId': 1,
+          'flightDestinationAirportId': 1,
           'flightNumber': 1,
           'flightDate': 1
         }
@@ -110,21 +99,11 @@ export const FlightAggregations = {
       {
         '$project': {
           '_id': 1,
-          'userId': {
-            '$toObjectId': '$userId'
-          },
-          'airlineId': {
-            '$toObjectId': '$airlineId'
-          },
-          'aircraftId': {
-            '$toObjectId': '$aircraftId'
-          },
-          'flightOriginAirportId': {
-            '$toObjectId': '$flightOriginAirportId'
-          },
-          'flightDestinationAirportId': {
-            '$toObjectId': '$flightDestinationAirportId'
-          },
+          'userId': 1,
+          'airlineId': 1,
+          'aircraftId': 1,
+          'flightOriginAirportId': 1,
+          'flightDestinationAirportId': 1,
           'flightNumber': 1,
           'flightDate': 1
         }
