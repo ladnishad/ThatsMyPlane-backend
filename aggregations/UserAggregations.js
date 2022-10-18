@@ -115,6 +115,8 @@ export const UserAggregations = {
       return e
     }
   },
+  // getAllUserFlightsByAircrafts aggregation in aircraft aggregations
+  
   "getAllUserFlightsByAircraftTypes": async ({ userId }) => {
     const pipeline = [
   {

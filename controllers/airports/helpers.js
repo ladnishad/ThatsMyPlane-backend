@@ -16,6 +16,10 @@ export const get = {
     const airportSearchResult = await Airport.find({ ICAO: airportICAO }).exec()
     return airportSearchResult.pop()
   },
+  airportById: async ({ airportId }) => {
+    const airportByIdResult = await Airport.findOne(airportId)
+    return airportByIdResult
+  },
   airports: async({ filters }) => {
     if(!filters){
       const AirportsOnDb = await Airport.find({}).exec()
