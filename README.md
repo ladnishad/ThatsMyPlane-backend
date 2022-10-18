@@ -1,4 +1,4 @@
-# TrackMyFlights-backend
+# ThatsMyPlane-backend
 Backend for the TrackMyFlights app
 
 Data Sources:
