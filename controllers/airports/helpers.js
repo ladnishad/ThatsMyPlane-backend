@@ -17,7 +17,7 @@ export const get = {
     return airportSearchResult.pop()
   },
   airportById: async ({ airportId }) => {
-    const airportByIdResult = await Airport.findOne(airportId)
+    const airportByIdResult = await Airport.findOne({ _id: airportId })
     return airportByIdResult
   },
   airports: async({ filters }) => {

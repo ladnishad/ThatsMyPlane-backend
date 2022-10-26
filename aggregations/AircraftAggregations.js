@@ -122,12 +122,20 @@ export const AircraftAggregations = {
       const processedResult = await asyncMap(aggregateResult, async(eachResult) => {
         let resultFlights = eachResult.flights
 
-        resultFlights = await asyncMap(resultFlights, async({ _id, userId, flightNumber, flightDate, flightOriginalAirportId, flightDestinationAirportId, caption, visibility }) => {
-          const originAirport = await airportGetters.airportById({ airportId: flightOriginAirportId })
-          const destinationAirport = await airportGetters.airportById({ airportId: flightDestinationAirportId })
+        resultFlights = await asyncMap(resultFlights, async({ _id, userId, flightNumber, flightDate, flightOriginAirportId, flightDestinationAirportId, caption, visibility }) => {
+          let originAirport = {}
+          let destinationAirport = {}
+
+          if(flightOriginAirportId){
+            originAirport = await airportGetters.airportById({ airportId: flightOriginAirportId })
+          }
+
+          if(flightDestinationAirportId){
+            destinationAirport = await airportGetters.airportById({ airportId: flightDestinationAirportId })
+          }
 
           return {
-            _id,
+            flightId: _id,
             userId,
             flightNumber,
             flightDate,
@@ -138,7 +146,8 @@ export const AircraftAggregations = {
           }
         })
 
-        return resultFlights
+        eachResult.flights = resultFlights
+        return eachResult
       })
 
       return processedResult
