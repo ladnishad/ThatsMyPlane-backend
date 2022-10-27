@@ -14,6 +14,7 @@ import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAi
 import { removeDuplicateAirports } from "./migration/removeDuplicateAirports"
 import { ImportAirlines } from "./migration/importAirlines"
 import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
+import { ImportUserFlights } from "./migration/importUserFlights"
 
 dotenv.config();
 
@@ -63,4 +64,6 @@ app.listen(process.env.SERVER_PORT, async() => {
 
   // Run to ingest aircraft types data
   // await ImportAircraftsTypes()
+
+  // await ImportUserFlights()
 });

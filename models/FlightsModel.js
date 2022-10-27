@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import dayjs from "dayjs";
+import { AppStrings } from "../assets/AppStrings"
 
 const { Schema, model } = mongoose
 
@@ -47,8 +48,16 @@ const FlightsSchema = new Schema({
 FlightsSchema.pre("save", async function(next) {
   const _id = mongoose.Types.ObjectId()
   this._id = _id
-  
-  next()
+
+  const flightOnDb = await this.constructor.findOne({ $and: [{ userId: this.userId }, { aircraftId: this.aircraftId}, { flightNumber: this.flightNumber }, { flightDate: this.flightDate }, { flightOriginAirportId: this.flightOriginAirportId }, { flightDestinationAirportId: this.flightDestinationAirportId } ]}).exec()
+
+  if(flightOnDb){
+    const err = new Error(AppStrings["flight-already-added-err-msg"])
+    next(err)
+  }
+  else{
+    next()
+  }
 })
 
 export const Flight = model("Flights", FlightsSchema)

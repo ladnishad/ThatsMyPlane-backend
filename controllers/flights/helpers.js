@@ -219,17 +219,17 @@ export const set = {
       throw new Error(AppStrings["airline-not-supported-err-msg"])
     }
 
-    const existingFlight = await Flight.findOne({ $and: [ { userId }, { airlineId: airline._id }, { flightNumber }, { flightDate: scheduledOut } ] }).exec()
-
-    if(existingFlight){
-      throw new Error(AppStrings["flight-already-added-err-msg"])
-    }
-
     let aircraftOnDb = await aircraftGetters.aircraft({ aircraftRegistration })
 
     if(!aircraftOnDb){
       aircraftOnDb = await aircraftSetters.createAircraft({ aircraftRegistration, aircraftType, airlineICAO })
     }
+
+    // const existingFlight = await Flight.findOne({ $and: [{ userId }, { aircraftId: aircraftOnDb._id}, { flightNumber }, { flightDate: scheduledOut }, { flightOriginAirportId: this.flightOriginAirportId }, { flightDestinationAirportId: this.flightDestinationAirportId } ]}).exec()
+    //
+    // if(existingFlight){
+    //   throw new Error(AppStrings["flight-already-added-err-msg"])
+    // }
 
     const FlightToAddForUser = new Flight({
       userId,
