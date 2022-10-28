@@ -71,6 +71,36 @@ export const get = {
 
     return flightsInformation
   },
+  historicFlightsOnFlightDateWithIdent: async({ flightIdent, flightDate }) => {
+    try{
+      const startDate = dayjs(flightDate).hour(0).minute(0).second(0).toISOString();
+      const endDate = dayjs(flightDate).hour(23).minute(59).second(59).toISOString();
+
+      const flightsWithThisIdentAPIData = await axios.get(`${process.env.FLIGHTAWARE_API_DOMAIN}/history/flights/${flightIdent.toUpperCase()}`, { headers: {"x-apikey": process.env.FLIGHTAWARE_API_KEY }, params: { "start": startDate, "end": endDate } })
+
+      const flightsInformation = await asyncMap(flightsWithThisIdentAPIData.data.flights, async({ flight_number, registration, scheduled_out, scheduled_in, status, origin, destination, aircraft_type, operator_icao, operator_iata, progress_percent }) => {
+        return {
+          flightNumber: flight_number,
+          flightDate: dayjs(scheduled_out).valueOf(),
+          airlineICAO: operator_icao,
+          airlineIATA: operator_iata,
+          aircraftRegistration: registration,
+          aircraftType: aircraft_type,
+          scheduledOut: scheduled_out,
+          scheduledIn: scheduled_in,
+          originICAO: origin.code,
+          destinationICAO: destination.code,
+          status,
+          progressPercent: progress_percent
+        }
+      })
+
+      return flightsInformation
+    } catch(e){
+      console.log(e);
+      throw new Error(e)
+    }
+  },
 }
 
 export const set = {

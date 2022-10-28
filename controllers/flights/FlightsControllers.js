@@ -48,6 +48,19 @@ export const SearchFlightsByRegistration = async(req, res) => {
   }
 }
 
+export const SearchHistoricFlight = async(req, res) => {
+  const { flightSearchParam, flightDate } = req.body
+
+  try {
+    const flightDateDayJsObject = await flightGetters.flightDateDayJsObject({ flightDate })
+    const flightsMatchingParamOnFlightDate = await flightGetters.historicFlightsOnFlightDateWithIdent({ flightIdent: flightSearchParam, flightDate: flightDateDayJsObject })
+
+    res.send(flightsMatchingParamOnFlightDate)
+  } catch(e) {
+    res.send(e)
+  }
+}
+
 export const AddFlightToUserAccount = async(req, res) => {
   const { userId, flightInformation, caption, visibility, fromApi } = req.body
 
