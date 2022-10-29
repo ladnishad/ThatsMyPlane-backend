@@ -1,15 +1,15 @@
 import mongoose from "mongoose"
 import { User } from "../models/UsersModel"
 import { asyncForEach } from "../helpers"
-
-const usersToAdd = []
+import { UsersData } from "../dataSources/UsersData"
 
 export const createUsers = async() => {
-  await asyncForEach(usersToAdd, async({ firstName, lastName, email }) => {
+  await asyncForEach(UsersData, async({ firstName, lastName, email, password }) => {
     const UserToSave = new User({
       firstName,
       lastName,
-      email
+      email,
+      password
     })
 
     UserToSave.save((err, UserSaved) => {

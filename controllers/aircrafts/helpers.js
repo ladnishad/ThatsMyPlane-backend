@@ -8,6 +8,7 @@ import { Airline } from "../../models/AirlinesModel"
 import { AircraftType, Aircraft } from "../../models/AircraftsModel"
 import { Airport } from "../../models/AirportsModel"
 
+import { get as AirlineGetters } from "../airlines/helpers"
 import { AppStrings } from "../../assets/AppStrings"
 import { asyncMap } from "../../helpers"
 
@@ -16,7 +17,11 @@ dotenv.config();
 export const get = {
   aircraft: async({ aircraftRegistration }) => {
     const aircraftSearchResult = await Aircraft.find({ registrationNum: aircraftRegistration }).exec()
-    return aircraftSearchResult.pop()
+
+    if(aircraftSearchResult.length){
+        return aircraftSearchResult.pop()
+    }
+    return null
   },
   "aircraft.images": async({ aircraftRegistration }) => {
     let aircraftImageResponse = []
@@ -54,11 +59,20 @@ export const get = {
     })
 
     return aircraftImageResponse
+  },
+  aircraftTypes: async ({ filters }) => {
+    if(!filters){
+      const AircraftTypesOnDb = await AircraftType.find({}).exec()
+      return AircraftTypesOnDb
+    }
+
+    const AircraftTypesOnDb = await AircraftType.find({ ...filters }).exec()
+    return AircraftTypesOnDb
   }
 }
 
 export const set = {
-  createAircraft: async({ aircraftRegistration, aircraftType }) => {
+  createAircraft: async({ aircraftRegistration, aircraftType, airlineICAO }) => {
     const aircraftOnDb = await Aircraft.find({ registrationNum: aircraftRegistration }).exec()
 
     if(aircraftOnDb.length){
@@ -76,6 +90,14 @@ export const set = {
         registrationNum: aircraftRegistration,
         aircraftTypeId: aircraftTypeOnDb.pop()._id
       })
+
+      if(airlineICAO){
+        const airlineOnDb = await AirlineGetters.airline({ airlineICAO })
+
+        if(airlineOnDb){
+          NewAircraft.airlineId = airlineOnDb.id
+        }
+      }
 
       try{
         const SavedAircraft = await NewAircraft.save()

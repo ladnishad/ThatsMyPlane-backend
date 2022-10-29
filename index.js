@@ -11,15 +11,17 @@ import { routes } from "./routes/appRoutes";
 import CorsOptions from "./config/corsOptions"
 import { createUsers } from "./migration/createUsers"
 import { ImportAirports, AddGeoLocationFromDbBackup } from "./migration/importAirports"
+import { removeDuplicateAirports } from "./migration/removeDuplicateAirports"
 import { ImportAirlines } from "./migration/importAirlines"
 import { ImportAircraftsTypes } from "./migration/importAircraftTypes"
+import { ImportUserFlights } from "./migration/importUserFlights"
 
 dotenv.config();
 
 // PassportConfig(passport)
 const app = express();
 
-const DB_LINK = process.env.NODE_ENV === "production" ? process.env.PROD_DB_LINK : process.env.LOCAL_DB_LINK
+const DB_LINK = process.env.NODE_ENV === "production" ? process.env.PROD_DB_LINK : process.env.DEV_DB_LINK
 mongoose.connect(DB_LINK,{
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -52,6 +54,9 @@ app.listen(process.env.SERVER_PORT, async() => {
   // Run to update lat long format to utilize geospatial from MongoDB
   // await AddGeoLocationFromDbBackup()
 
+  // Run to delete duplicate entries of airports
+  // await removeDuplicateAirports()
+
   // Run to ingest airlines data (Just USA for now)
   // console.log("Initiating Airlines Data load")
   // await ImportAirlines()
@@ -59,4 +64,6 @@ app.listen(process.env.SERVER_PORT, async() => {
 
   // Run to ingest aircraft types data
   // await ImportAircraftsTypes()
+
+  // await ImportUserFlights()
 });

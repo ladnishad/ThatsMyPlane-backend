@@ -16,6 +16,19 @@ export const get = {
     const airportSearchResult = await Airport.find({ ICAO: airportICAO }).exec()
     return airportSearchResult.pop()
   },
+  airportById: async ({ airportId }) => {
+    const airportByIdResult = await Airport.findOne({ _id: airportId })
+    return airportByIdResult
+  },
+  airports: async({ filters }) => {
+    if(!filters){
+      const AirportsOnDb = await Airport.find({}).exec()
+      return AirportsOnDb
+    }
+
+    const AirportsOnDb = await Airport.find({ ...filters }).exec()
+    return AirportsOnDb
+  },
   airportsNearBy: async({ long=0, lat=0, minDistance=0, maxDistance=40, unit="miles"}) => {
     try{
       let verifiedMinDistance = unit === "miles" ? milesToMeters(minDistance) : minDistance

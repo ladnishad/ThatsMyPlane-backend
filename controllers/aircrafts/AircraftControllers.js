@@ -11,11 +11,22 @@ dotenv.config();
 
 export const GetAircraftImage = async(req, res) => {
   const { aircraftRegistration } = req.body
-
   try{
     const aircraftImages = await aircraftGetters["aircraft.images"]({ aircraftRegistration })
-
     res.send(aircraftImages)
+  } catch(e){
+    console.log(e);
+    res.send(e)
+  }
+}
+
+export const GetAircraftTypes = async(req, res) => {
+  const { filters } = req.body
+
+  try {
+    const AircraftTypesOnDb = await aircraftGetters.aircraftTypes({ filters })
+
+    res.send(AircraftTypesOnDb)
   } catch(e){
     res.send(e)
   }

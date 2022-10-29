@@ -13,11 +13,16 @@ dotenv.config();
 
 export const SignUpUser = async(req, res) => {
     const { firstName, lastName, email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ 'message': AppStrings["user-email-password-required"] });
+    if (!firstName || !lastName || !email || !password) return res.status(400).json({ 'message': AppStrings["user-signup-fields-required"] });
 
     // check for duplicate usernames in the db
     const duplicate = await UserGetters.userByEmail({ email })
-    if (duplicate) return res.sendStatus(409); //Conflict
+    if (duplicate) return res.status(409).json({ 'message': AppStrings["user-already-exists-err-msg"] });
+
+    // SignUp blocker [TEMP]
+    if(email !== process.env.ADMIN_LOGIN){
+      return res.status(400).json({ 'message': AppStrings["user-signup-blocked"] });
+    }
 
     try {
         //store the new user
@@ -38,7 +43,7 @@ export const LoginUser = async (req, res) => {
   const UserOnDb = await UserGetters.userByEmail({ email })
 
   if(!UserOnDb){
-    return res.sendStatus(404).json({ 'message': AppStrings["user-not-found-err-msg"]});
+    return res.status(404).json({ 'message': AppStrings["user-not-found-err-msg"]});
   }
 
   const validPassword = await UserOnDb.isValidPassword(password)
@@ -55,7 +60,7 @@ export const LoginUser = async (req, res) => {
 
     return res
   }
-  return res.sendStatus(401)
+  return res.status(401).json({ 'message': AppStrings["user-incorrect-credentials"]})
 }
 
 export const RefreshUserToken = async(req, res) => {

@@ -33,7 +33,7 @@ const PassportConfig = (passport) => {
 
       const validPassword = await UserOnDb.isValidPassword(password)
       if(!validPassword){
-        return done(null, false, { message: AppStrings["user-incorrect-password"]})
+        return done(null, false, { message: AppStrings["user-incorrect-credentials"]})
       }
 
       return done(null, UserOnDb, { message: AppStrings["user-login-successful"]})
