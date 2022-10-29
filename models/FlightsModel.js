@@ -1,9 +1,11 @@
 import mongoose from "mongoose"
 import dayjs from "dayjs";
+import { AppStrings } from "../assets/AppStrings"
 
 const { Schema, model } = mongoose
 
 const FlightsSchema = new Schema({
+  _id: String,
   userId: {
     type: String,
     required: true
@@ -18,17 +20,43 @@ const FlightsSchema = new Schema({
   },
   flightNumber: {
     type: String,
-    required: true
+    default: ""
   },
   flightDate: {
     type: Number,
     default: 0
   },
   flightOriginAirportId: {
-    type: String
+    type: String,
+    default: ""
   },
   flightDestinationAirportId: {
-    type: String
+    type: String,
+    default: ""
+  },
+  caption: {
+    type: String,
+    default: ""
+  },
+  visibility: {
+    type: String,
+    enum: ["Private", "Friends", "Public"],
+    default: "Private"
+  }
+})
+
+FlightsSchema.pre("save", async function(next) {
+  const _id = mongoose.Types.ObjectId()
+  this._id = _id
+
+  const flightOnDb = await this.constructor.findOne({ $and: [{ userId: this.userId }, { aircraftId: this.aircraftId}, { flightNumber: this.flightNumber }, { flightDate: this.flightDate }, { flightOriginAirportId: this.flightOriginAirportId }, { flightDestinationAirportId: this.flightDestinationAirportId } ]}).exec()
+
+  if(flightOnDb){
+    const err = new Error(AppStrings["flight-already-added-err-msg"])
+    next(err)
+  }
+  else{
+    next()
   }
 })
 

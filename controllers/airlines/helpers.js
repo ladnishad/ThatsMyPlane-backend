@@ -12,7 +12,12 @@ dotenv.config();
 
 export const get = {
   airline: async({ airlineICAO }) => {
-    const airlineSearchResult = await Airline.find({ ICAO: airlineICAO }).exec()
-    return airlineSearchResult.pop()
+    const airlineSearchResult = await Airline.findOne({ ICAO: airlineICAO }).exec()
+    return airlineSearchResult
+  },
+
+  airlines: async() => {
+    const airlinesOnDb = await Airline.find({}).exec()
+    return airlinesOnDb
   }
 }

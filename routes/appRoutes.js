@@ -10,10 +10,11 @@ import verifyJWT from "../middlewares/verifyJWT"
 import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controllers/auth/AuthControllers"
 import { get as UserGetters} from "../controllers/users/helpers"
 import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
-import { SearchFlights, AddFlightToUserAccount } from "../controllers/flights/FlightsControllers"
-import { AddAirline } from "../controllers/airlines/AirlinesControllers"
-import { GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
-import { NearByAirports } from "../controllers/airports/AirportsControllers"
+import { GetUserProfilePrivate } from "../controllers/users/UsersController"
+import { SearchFlightsbyFlightNumber, SearchFlightsByRegistration, SearchHistoricFlight, AddFlightToUserAccount, UserAircrafts } from "../controllers/flights/FlightsControllers"
+import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
+import { GetAircraftTypes, GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
+import { GetAirports, NearByAirports, SearchAirport } from "../controllers/airports/AirportsControllers"
 import { AppStrings } from "../assets/AppStrings"
 
 dotenv.config();
@@ -36,22 +37,45 @@ export const routes = (app) => {
 
   app.route("/logout").get(LogoutUser)
 
-  app.use(verifyJWT)
+  app.route("/account")
+  .get(verifyJWT, GetUserProfilePrivate)
 
   app.route("/airlines")
-  .post(AddAirline)
+  .get(verifyJWT, GetAirlines)
+  .post(verifyJWT, AddAirline)
 
-  app.route("/search/flights")
-  .post(SearchFlights)
+  app.route("/search/flights/flightNumber")
+  .post(verifyJWT, SearchFlightsbyFlightNumber)
+
+  app.route("/search/flights/registration")
+  .post(verifyJWT, SearchFlightsByRegistration)
+
+  app.route("/search/historic/flights")
+  .post(verifyJWT, SearchHistoricFlight)
+
+  app.route("/search/aircraft")
+  .post(verifyJWT, SearchFlightsByRegistration)
 
   app.route("/flight/add")
-  .post(AddFlightToUserAccount)
+  .post(verifyJWT, AddFlightToUserAccount)
 
   app.route("/aircraft/images")
-  .get(GetAircraftImage)
+  .post(verifyJWT, GetAircraftImage)
+
+  app.route("/aircraft/types")
+  .get(verifyJWT, GetAircraftTypes)
+
+  app.route("/airports")
+  .get(verifyJWT, GetAirports)
 
   app.route("/airports/nearby")
-  .get(NearByAirports)
+  .get(verifyJWT, NearByAirports)
+
+  app.route("/search/airports")
+  .post(verifyJWT, SearchAirport)
+
+  app.route("/user/aircrafts")
+  .post(verifyJWT, UserAircrafts)
 
   app.get("*", async(req, res) => {
     res.redirect('/docs')
