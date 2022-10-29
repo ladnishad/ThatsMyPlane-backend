@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 const { Schema, model } = mongoose
 
 const UsersSchema = new Schema({
+  _id: String,
   firstName: {
     type: String,
     required: true
@@ -28,6 +29,9 @@ const UsersSchema = new Schema({
 })
 
 UsersSchema.pre("save", async function(next) {
+  const _id = mongoose.Types.ObjectId()
+
+  this._id = _id
   const { password } = this
   const hashedPassword = await bcrypt.hash(password, 10)
   this.password = hashedPassword
