@@ -42,6 +42,11 @@ RedisClient.on("ready", () => console.log("Connected successfully to redis"))
 
 RedisClient.connect();
 
+process.on('SIGINT', function() {
+    RedisClient.quit();
+    console.log('Terminated Redis connection');
+})
+
 app.use(credentials);
 
 app.use(cors(CorsOptions));
