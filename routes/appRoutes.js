@@ -41,7 +41,7 @@ export const routes = (app) => {
   .get(verifyJWT, GetUserProfilePrivate)
 
   app.route("/airlines")
-  .get(verifyJWT, GetAirlines)
+  .get(verifyJWT, GetAirlines) // TODO: Cache
   .post(verifyJWT, AddAirline)
 
   app.route("/search/flights/flightNumber")
@@ -59,7 +59,7 @@ export const routes = (app) => {
   app.route("/flight/add")
   .post(verifyJWT, AddFlightToUserAccount)
 
-  app.route("/aircraft/images")
+  app.route("/aircraft/images") // TODO: Cache
   .post(verifyJWT, GetAircraftImage)
 
   app.route("/aircraft/types")

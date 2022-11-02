@@ -84,18 +84,28 @@ export const FlightsDetailsForUser = async (req, res) => {
 }
 
 export const UserAircrafts = async(req, res) => {
+  const { redis } = req
+
   const { userId } = req.body
 
   try{
-    const FlightsForUserByAircraft = await AircraftAggregations.getAllUserFlightsByAircrafts({ userId })
-    console.log(FlightsForUserByAircraft);
+    const cachedResults = await redis.get(`${userId}-aircrafts`)
 
-    // const FlightsByAircraft = {}
-    //
-    // await asyncForEach(FlightsForUser, async(flightForUser) => {
-    //
-    // })
-    res.send(FlightsForUserByAircraft)
+    if(cachedResults){
+      const CachedFlightsForUser = JSON.parse(cachedResults)
+
+      res.send(CachedFlightsForUser)
+    }
+    else{
+      const FlightsForUserByAircraft = await AircraftAggregations.getAllUserFlightsByAircrafts({ userId })
+
+      await redis.set(`${userId}-aircrafts`, JSON.stringify(FlightsForUserByAircraft), {
+        EX: 180,
+        NX: true
+      })
+
+      res.send(FlightsForUserByAircraft)
+    }
   } catch(e){
     console.log(e);
   }
