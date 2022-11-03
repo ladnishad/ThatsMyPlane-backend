@@ -41,7 +41,7 @@ export const routes = (app) => {
   .get(verifyJWT, GetUserProfilePrivate)
 
   app.route("/airlines")
-  .get(verifyJWT, GetAirlines) // TODO: Cache
+  .get(verifyJWT, GetAirlines)
   .post(verifyJWT, AddAirline)
 
   app.route("/search/flights/flightNumber")
