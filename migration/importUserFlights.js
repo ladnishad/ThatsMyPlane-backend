@@ -30,7 +30,7 @@ export const ImportUserFlights = async () => {
 
       const originAirport = await Airport.findOne({ IATA: flightOriginAirport }).exec()
 
-      const destinationAirport = await Airport.findOne({ IATA: flightOriginAirport }).exec()
+      const destinationAirport = await Airport.findOne({ IATA: flightDestinationAirport }).exec()
 
       if(!originAirport || !destinationAirport){
         throw new Error("An airport was not found")
