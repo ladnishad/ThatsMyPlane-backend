@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday";
 import dotenv from "dotenv";
 import axios from "axios";
 
@@ -21,160 +22,122 @@ import { asyncMap } from "../../helpers";
 
 dotenv.config();
 
+dayjs.extend(isToday);
+
 export const get = {
   flightDateDayJsObject: ({ flightDate }) => dayjs(flightDate).toISOString(),
 
-  flightWithFlightIdent: async ({ flightIdent }) => {
-    const flightsWithThisIdentAPIData = await axios.get(
-      `${
-        process.env.FLIGHTAWARE_API_DOMAIN
-      }/flights/${flightIdent.toUpperCase()}`,
-      { headers: { "x-apikey": process.env.FLIGHTAWARE_API_KEY } }
-    );
-
-    const flightDataFromAPIData =
-      flightsWithThisIdentAPIData.data.flights.pop();
-    console.log(flightsWithThisIdentAPIData.data.flights);
-    const {
-      flight_number,
-      scheduled_out,
-      operator_icao,
-      operator_iata,
-      registration,
-      aircraft_type,
-      estimated_out,
-      scheduled_in,
-      estimated_in,
-      actual_in,
-      status,
-      origin,
-      destination,
-      progress_percent,
-    } = flightDataFromAPIData;
-
-    const flightInformation = {
-      flightNumber: flight_number,
-      flightDate: dayjs(scheduled_out).valueOf(),
-      airlineICAO: operator_icao,
-      airlineIATA: operator_iata,
-      aircraftRegistration: registration,
-      aircraftType: aircraft_type,
-      scheduledOut: dayjs(scheduled_out).valueOf(),
-      estimatedOut: dayjs(estimated_out).valueOf(),
-      scheduledIn: dayjs(scheduled_in).valueOf(),
-      estimatedIn: dayjs(estimated_in).valueOf(),
-      actualIn: dayjs(actual_in).valueOf(),
-      originICAO: origin.code,
-      destinationICAO: destination.code,
-      status,
-      progressPercent: progress_percent,
-    };
-
-    return flightInformation;
-  },
-  flightsOnFlightDateWithIdent: async ({ flightIdent, flightDate }) => {
-    const flightsWithThisIdentAPIData = await axios.get(
-      `${
-        process.env.FLIGHTAWARE_API_DOMAIN
-      }/flights/${flightIdent.toUpperCase()}`,
-      { headers: { "x-apikey": process.env.FLIGHTAWARE_API_KEY } }
-    );
-
-    const flightsWithThisFlightIdentOnFlightDate =
-      flightsWithThisIdentAPIData.data.flights.filter((flight) =>
-        dayjs(flight.scheduled_out).isSame(flightDate, "day")
-      );
-
-    const flightsInformation = await asyncMap(
-      flightsWithThisFlightIdentOnFlightDate,
-      async ({
-        flight_number,
-        registration,
-        scheduled_out,
-        scheduled_in,
-        status,
-        origin,
-        destination,
-        aircraft_type,
-        operator_icao,
-        operator_iata,
-        progress_percent,
-      }) => {
-        return {
-          flightNumber: flight_number,
-          flightDate: dayjs(scheduled_out).valueOf(),
-          airlineICAO: operator_icao,
-          airlineIATA: operator_iata,
-          aircraftRegistration: registration,
-          aircraftType: aircraft_type,
-          scheduledOut: scheduled_out,
-          scheduledIn: scheduled_in,
-          originICAO: origin.code,
-          destinationICAO: destination.code,
-          status,
-          progressPercent: progress_percent,
-        };
-      }
-    );
-
-    return flightsInformation;
-  },
-  historicFlightsOnFlightDateWithIdent: async ({ flightIdent, flightDate }) => {
+  flightsWithIdent: async ({ flightIdent, flightDate }) => {
     try {
-      const startDate = dayjs(flightDate)
-        .hour(0)
-        .minute(0)
-        .second(0)
-        .toISOString();
-      const endDate = dayjs(flightDate)
-        .hour(23)
-        .minute(59)
-        .second(59)
-        .toISOString();
+      const { type, value } = flightIdent;
 
-      const flightsWithThisIdentAPIData = await axios.get(
-        `${
-          process.env.FLIGHTAWARE_API_DOMAIN
-        }/history/flights/${flightIdent.toUpperCase()}`,
-        {
-          headers: { "x-apikey": process.env.FLIGHTAWARE_API_KEY },
-          params: { start: startDate, end: endDate },
-        }
-      );
+      const dateToday = dayjs();
+      const flightDateDayJs = dayjs(flightDate);
+      const isFlightDateToday = flightDateDayJs.isToday();
+      const isFlightDateInFuture = flightDateDayJs.isAfter(dateToday, "day");
 
-      const flightsInformation = await asyncMap(
-        flightsWithThisIdentAPIData.data.flights,
-        async ({
-          flight_number,
-          registration,
-          scheduled_out,
-          scheduled_in,
-          status,
-          origin,
-          destination,
-          aircraft_type,
-          operator_icao,
-          operator_iata,
-          progress_percent,
-        }) => {
-          return {
-            flightNumber: flight_number,
-            flightDate: dayjs(scheduled_out).valueOf(),
-            airlineICAO: operator_icao,
-            airlineIATA: operator_iata,
-            aircraftRegistration: registration,
-            aircraftType: aircraft_type,
-            scheduledOut: scheduled_out,
-            scheduledIn: scheduled_in,
-            originICAO: origin.code,
-            destinationICAO: destination.code,
+      if (!isFlightDateToday && !isFlightDateInFuture) {
+        const startDate = dayjs(flightDate)
+          .hour(0)
+          .minute(0)
+          .second(0)
+          .toISOString();
+        const endDate = dayjs(flightDate)
+          .hour(23)
+          .minute(59)
+          .second(59)
+          .toISOString();
+
+        const flightsAPIData = await axios.get(
+          `${
+            process.env.FLIGHTAWARE_API_DOMAIN
+          }/history/flights/${value.toUpperCase()}`,
+          {
+            headers: { "x-apikey": process.env.FLIGHTAWARE_API_KEY },
+            params: { start: startDate, end: endDate },
+          }
+        );
+
+        const flightsInformation = await asyncMap(
+          flightsAPIData.data.flights,
+          async ({
+            flight_number,
+            registration,
+            scheduled_out,
+            scheduled_in,
             status,
-            progressPercent: progress_percent,
-          };
-        }
-      );
+            origin,
+            destination,
+            aircraft_type,
+            operator_icao,
+            operator_iata,
+            progress_percent,
+          }) => {
+            return {
+              flightNumber: flight_number,
+              flightDate: dayjs(scheduled_out).valueOf(),
+              airlineICAO: operator_icao,
+              airlineIATA: operator_iata,
+              aircraftRegistration: registration,
+              aircraftType: aircraft_type,
+              scheduledOut: scheduled_out,
+              scheduledIn: scheduled_in,
+              originICAO: origin.code,
+              destinationICAO: destination.code,
+              status,
+              progressPercent: progress_percent,
+            };
+          }
+        );
 
-      return flightsInformation;
+        return flightsInformation;
+      } else {
+        const flightsWithIdentAPIData = await axios.get(
+          `${
+            process.env.FLIGHTAWARE_API_DOMAIN
+          }/flights/${value.toUpperCase()}`,
+          { headers: { "x-apikey": process.env.FLIGHTAWARE_API_KEY } }
+        );
+
+        const flightsWithFlightIdentOnFlightDate =
+          flightsWithIdentAPIData.data.flights.filter((flight) =>
+            dayjs(flight.scheduled_out).isSame(flightDate, "day")
+          );
+
+        const flightsInformation = await asyncMap(
+          flightsWithFlightIdentOnFlightDate,
+          async ({
+            flight_number,
+            registration,
+            scheduled_out,
+            scheduled_in,
+            status,
+            origin,
+            destination,
+            aircraft_type,
+            operator_icao,
+            operator_iata,
+            progress_percent,
+          }) => {
+            return {
+              flightNumber: flight_number,
+              flightDate: dayjs(scheduled_out).valueOf(),
+              airlineICAO: operator_icao,
+              airlineIATA: operator_iata,
+              aircraftRegistration: registration,
+              aircraftType: aircraft_type,
+              scheduledOut: scheduled_out,
+              scheduledIn: scheduled_in,
+              originICAO: origin.code,
+              destinationICAO: destination.code,
+              status,
+              progressPercent: progress_percent,
+            };
+          }
+        );
+
+        return flightsInformation;
+      }
     } catch (e) {
       console.log(e);
       throw new Error(e);

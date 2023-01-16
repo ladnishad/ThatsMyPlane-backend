@@ -1,21 +1,43 @@
-import passport from "passport"
-import jwt from "jsonwebtoken"
-import JWTR from 'jwt-redis';
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import JWTR from "jwt-redis";
 import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express"
+import swaggerUi from "swagger-ui-express";
 
-import { SwaggerSpec } from "../swaggerConfig"
-import { RedisClientConnect } from "../redisConfig"
-import verifyJWT from "../middlewares/verifyJWT"
-import { SignUpUser, LoginUser, RefreshUserToken, LogoutUser } from "../controllers/auth/AuthControllers"
-import { get as UserGetters} from "../controllers/users/helpers"
-import { get as RefreshTokenGetters, set as RefreshTokenSetters } from "../controllers/refreshTokens/helpers"
-import { GetUserProfilePrivate } from "../controllers/users/UsersController"
-import { SearchFlightsbyFlightNumber, SearchFlightsByRegistration, SearchHistoricFlight, AddFlightToUserAccount, UserAircrafts } from "../controllers/flights/FlightsControllers"
-import { GetAirlines, AddAirline } from "../controllers/airlines/AirlinesControllers"
-import { GetAircraftTypes, GetAircraftImage } from "../controllers/aircrafts/AircraftControllers"
-import { GetAirports, NearByAirports, SearchAirport } from "../controllers/airports/AirportsControllers"
-import { AppStrings } from "../assets/AppStrings"
+import { SwaggerSpec } from "../swaggerConfig";
+import { RedisClientConnect } from "../redisConfig";
+import verifyJWT from "../middlewares/verifyJWT";
+import {
+  SignUpUser,
+  LoginUser,
+  RefreshUserToken,
+  LogoutUser,
+} from "../controllers/auth/AuthControllers";
+import { get as UserGetters } from "../controllers/users/helpers";
+import {
+  get as RefreshTokenGetters,
+  set as RefreshTokenSetters,
+} from "../controllers/refreshTokens/helpers";
+import { GetUserProfilePrivate } from "../controllers/users/UsersController";
+import {
+  SearchFlights,
+  AddFlightToUserAccount,
+  UserAircrafts,
+} from "../controllers/flights/FlightsControllers";
+import {
+  GetAirlines,
+  AddAirline,
+} from "../controllers/airlines/AirlinesControllers";
+import {
+  GetAircraftTypes,
+  GetAircraftImage,
+} from "../controllers/aircrafts/AircraftControllers";
+import {
+  GetAirports,
+  NearByAirports,
+  SearchAirport,
+} from "../controllers/airports/AirportsControllers";
+import { AppStrings } from "../assets/AppStrings";
 
 dotenv.config();
 
@@ -27,57 +49,44 @@ dotenv.config();
 
 export const routes = (app) => {
   // Public
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(SwaggerSpec))
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(SwaggerSpec));
 
-  app.route("/signup").post(SignUpUser)
+  app.route("/signup").post(SignUpUser);
 
-  app.route("/login").post(LoginUser)
+  app.route("/login").post(LoginUser);
 
-  app.route("/refresh-token").get(RefreshUserToken)
+  app.route("/refresh-token").get(RefreshUserToken);
 
-  app.route("/logout").get(LogoutUser)
+  app.route("/logout").get(LogoutUser);
 
-  app.route("/account")
-  .get(verifyJWT, GetUserProfilePrivate)
+  app.route("/account").get(verifyJWT, GetUserProfilePrivate);
 
-  app.route("/airlines")
-  .get(verifyJWT, GetAirlines)
-  .post(verifyJWT, AddAirline)
+  app
+    .route("/airlines")
+    .get(verifyJWT, GetAirlines)
+    .post(verifyJWT, AddAirline);
 
-  app.route("/search/flights/flightNumber")
-  .post(verifyJWT, SearchFlightsbyFlightNumber)
+  app.route("/search/flights").post(verifyJWT, SearchFlights);
 
-  app.route("/search/flights/registration")
-  .post(verifyJWT, SearchFlightsByRegistration)
+  // app.route("/search/aircraft").post(verifyJWT, SearchFlightsByRegistration);
 
-  app.route("/search/historic/flights")
-  .post(verifyJWT, SearchHistoricFlight)
+  app.route("/flight/add").post(verifyJWT, AddFlightToUserAccount);
 
-  app.route("/search/aircraft")
-  .post(verifyJWT, SearchFlightsByRegistration)
+  app
+    .route("/aircraft/images") // TODO: Cache
+    .post(verifyJWT, GetAircraftImage);
 
-  app.route("/flight/add")
-  .post(verifyJWT, AddFlightToUserAccount)
+  app.route("/aircraft/types").get(verifyJWT, GetAircraftTypes);
 
-  app.route("/aircraft/images") // TODO: Cache
-  .post(verifyJWT, GetAircraftImage)
+  app.route("/airports").get(verifyJWT, GetAirports);
 
-  app.route("/aircraft/types")
-  .get(verifyJWT, GetAircraftTypes)
+  app.route("/airports/nearby").get(verifyJWT, NearByAirports);
 
-  app.route("/airports")
-  .get(verifyJWT, GetAirports)
+  app.route("/search/airports").post(verifyJWT, SearchAirport);
 
-  app.route("/airports/nearby")
-  .get(verifyJWT, NearByAirports)
+  app.route("/user/aircrafts").post(verifyJWT, UserAircrafts);
 
-  app.route("/search/airports")
-  .post(verifyJWT, SearchAirport)
-
-  app.route("/user/aircrafts")
-  .post(verifyJWT, UserAircrafts)
-
-  app.get("*", async(req, res) => {
-    res.redirect('/docs')
-  })
-}
+  app.get("*", async (req, res) => {
+    res.redirect("/docs");
+  });
+};
