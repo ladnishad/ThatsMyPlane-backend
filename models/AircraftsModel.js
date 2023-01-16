@@ -1,7 +1,7 @@
-import mongoose from "mongoose"
-import { AppStrings } from "../assets/AppStrings"
-
-const { Schema, model } = mongoose
+import mongoose from "mongoose";
+import { AppStrings } from "../assets/AppStrings";
+import { set as AircraftSetters } from "../controllers/aircrafts/helpers";
+const { Schema, model } = mongoose;
 
 const AircraftsTypeSchema = new Schema({
   _id: String,
@@ -17,9 +17,9 @@ const AircraftsTypeSchema = new Schema({
   },
   model: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 const AircraftsSchema = new Schema({
   _id: String,
@@ -30,26 +30,35 @@ const AircraftsSchema = new Schema({
   },
   aircraftTypeId: {
     type: String,
-    required: true
+    required: true,
   },
   airlineId: {
     type: String,
-    default: ''
+    default: "",
+  },
+});
+
+AircraftsSchema.pre("save", async function (next) {
+  const _id = mongoose.Types.ObjectId();
+  this._id = _id;
+  this.wasNew = this.isNew;
+  next();
+});
+
+AircraftsTypeSchema.pre("save", async function (next) {
+  const _id = mongoose.Types.ObjectId();
+  this._id = _id;
+
+  next();
+});
+
+AircraftsSchema.post("save", async function () {
+  if (this.wasNew) {
+    const setImages = await AircraftSetters?.imagesForAircraft({
+      aircraftId: this._id,
+    });
+    console.log(setImages);
   }
-})
-
-AircraftsSchema.pre("save", async function(next) {
-  const _id = mongoose.Types.ObjectId()
-  this._id = _id
-
-  next()
-})
-
-AircraftsTypeSchema.pre("save", async function(next) {
-  const _id = mongoose.Types.ObjectId()
-  this._id = _id
-
-  next()
-})
-export const AircraftType = model("AircraftTypes", AircraftsTypeSchema)
-export const Aircraft = model("Aircrafts", AircraftsSchema)
+});
+export const AircraftType = model("AircraftTypes", AircraftsTypeSchema);
+export const Aircraft = model("Aircrafts", AircraftsSchema);
