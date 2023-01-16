@@ -4,6 +4,7 @@ import passport from "passport"
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import dotenv from "dotenv";
+import { createClient } from "redis"
 
 import PassportConfig from "./middlewares/auth"
 import credentials from "./middlewares/credentials"
@@ -27,6 +28,25 @@ mongoose.connect(DB_LINK,{
   useUnifiedTopology: true
 })
 
+const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+
+const RedisClient = createClient({
+  url: redisUrl,
+  password: `${process.env.REDIS_PASSWORD}`,
+  tls: {}
+})
+
+RedisClient.on("error", (error) => console.error(`Error : ${error}`));
+
+RedisClient.on("ready", () => console.log("Connected successfully to redis"))
+
+RedisClient.connect();
+
+process.on('SIGINT', function() {
+    RedisClient.quit();
+    console.log('Terminated Redis connection');
+})
+
 app.use(credentials);
 
 app.use(cors(CorsOptions));
@@ -37,6 +57,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cookieParser())
+
+app.use(function(req, res, next) {
+  req.redis = RedisClient
+  next()
+})
 
 routes(app);
 

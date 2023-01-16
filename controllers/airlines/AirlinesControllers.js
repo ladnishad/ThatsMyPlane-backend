@@ -4,8 +4,30 @@ import { get as AirlineGetters } from "./helpers"
 import { AppStrings } from "../../assets/AppStrings"
 
 export const GetAirlines = async (req, res) => {
-  const allAirlines = await AirlineGetters.airlines()
-  res.send(allAirlines)
+  const { redis } = req
+
+  try {
+    const cachedResults = await redis.get("airlines")
+
+    if(cachedResults){
+      const airlines = JSON.parse(cachedResults)
+
+      res.send(airlines)
+    }
+    else {
+      const allAirlines = await AirlineGetters.airlines()
+
+      await redis.set("airlines", JSON.stringify(allAirlines), {
+        EX: 180,
+        NX: true
+      })
+
+      res.send(allAirlines)
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
 }
 export const AddAirline = async(req, res) => {
   const { userId, admin, IATA, ICAO, name, country } = req.body

@@ -181,5 +181,37 @@ export const FlightAggregations = {
     } catch(e){
       return e
     }
+  },
+  "flights.userRepeatedAircraftFlights": async ({ userId }) => {
+    const pipeline = [
+      {
+        '$match': {
+          'userId': userid
+        }
+      }, {
+        '$group': {
+          '_id': '$aircraftId',
+          'flights': {
+            '$push': '$$ROOT'
+          },
+          'count': {
+            '$sum': 1
+          }
+        }
+      }, {
+        '$match': {
+          'count': {
+            '$gt': 1
+          }
+        }
+      }
+    ]
+
+    try{
+      const result = await Flight.aggregate(pipeline)
+      return result
+    } catch(e){
+      return e
+    }
   }
 }
