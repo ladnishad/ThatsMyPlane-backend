@@ -1,6 +1,7 @@
 import { startCase } from "lodash";
 
 import { Notification } from "../../models/NotificationsModel";
+import { NotificationAggregations } from "../../aggregations/NotificationAggregations";
 import { get as UserGetters } from "../users/helpers";
 import { sendNotificationToClient } from "../../middlewares/pushNotifications";
 
@@ -9,10 +10,9 @@ import { AppStrings } from "../../assets/AppStrings";
 export const get = {
   notificationsForUser: async (userId) => {
     try {
-      const notifications = await Notification.find({
-        impactUserIds: userId,
-      }).exec();
-
+      const notifications = await NotificationAggregations.getUserNotifications(
+        { userId }
+      );
       return notifications;
     } catch (e) {
       return e;
