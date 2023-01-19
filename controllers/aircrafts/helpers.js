@@ -32,7 +32,42 @@ export const get = {
     }).exec();
 
     if (!aircraftOnDb.length) {
-      throw new Error(AppStrings["aircraft-not-found-err-msg"]);
+      const flickrUrl = `${process.env.FLICKR_PHOTO_SEARCH_URL}&text=${aircraftRegistration}`;
+
+      const aircraftPhotosReq = await axios.get(flickrUrl);
+
+      const aircraftPhotos = aircraftPhotosReq.data.photos.photo;
+      const numOfPhotos = aircraftPhotos.length;
+
+      let photosToConsider = [];
+
+      // If there are more than 5 pictures, only save  5
+      // If less than 5, make sure there are atleast 2 and save them
+      // Else show the last image
+
+      if (numOfPhotos > 5) {
+        photosToConsider = aircraftPhotos.slice(0, 5);
+      }
+      if (numOfPhotos >= 2 && numOfPhotos < 5) {
+        photosToConsider = aircraftPhotos.slice(0, 2);
+      }
+
+      if (numOfPhotos < 2) {
+        photosToConsider = [aircraftPhotos[numOfPhotos - 1]];
+      }
+
+      const ImagesForAircraft = await asyncMap(
+        photosToConsider,
+        async ({ server, id, secret, title }) => {
+          const aircraftPhotoURL = `${process.env.FLICKR_PHOTO_URL}/${server}/${id}_${secret}_c.jpg`;
+
+          return {
+            aircraftPhotoURL,
+            aircraftPhotoTitle: title,
+          };
+        }
+      );
+      return ImagesForAircraft
     }
 
     const aircraft = aircraftOnDb.pop();
