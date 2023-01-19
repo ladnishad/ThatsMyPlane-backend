@@ -13,6 +13,7 @@ import credentials from "./middlewares/credentials";
 import handleSocket from "./middlewares/subscriptions";
 import { routes } from "./routes/appRoutes";
 import CorsOptions from "./config/corsOptions";
+import AllowedOrigins from "./config/allowedOrigins";
 import { createUsers } from "./migration/createUsers";
 import {
   ImportAirports,
@@ -76,10 +77,15 @@ routes(app);
 
 const server = http.createServer(app);
 
-// const io = socketio(server);
+const io = socketio(server, {
+  cors: {
+    origin: AllowedOrigins,
+    methods: ["GET", "POST"],
+  },
+});
 
 // io.use(cors(CorsOptions));
-// io.use(handleSocket);
+io.use(handleSocket);
 
 server.listen(process.env.SERVER_PORT, async () => {
   console.log(`Server running on port ${process.env.SERVER_PORT}`);
