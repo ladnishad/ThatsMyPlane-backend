@@ -76,9 +76,10 @@ routes(app);
 
 const server = http.createServer(app);
 
-const io = socketio(server);
+// const io = socketio(server);
 
-io.use(handleSocket);
+// io.use(cors(CorsOptions));
+// io.use(handleSocket);
 
 server.listen(process.env.SERVER_PORT, async () => {
   console.log(`Server running on port ${process.env.SERVER_PORT}`);

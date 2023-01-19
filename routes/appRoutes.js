@@ -37,6 +37,9 @@ import {
   NearByAirports,
   SearchAirport,
 } from "../controllers/airports/AirportsControllers";
+
+import { GetUserNotifications } from "../controllers/notifications/NotificationsControllers";
+
 import { AppStrings } from "../assets/AppStrings";
 
 dotenv.config();
@@ -59,6 +62,7 @@ export const routes = (app) => {
 
   app.route("/logout").get(LogoutUser);
 
+  app.route("/notifications").post(verifyJWT, GetUserNotifications)
   app.route("/account").get(verifyJWT, GetUserProfilePrivate);
 
   app

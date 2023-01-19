@@ -74,7 +74,7 @@ FlightsSchema.pre("save", async function (next) {
 });
 
 FlightsSchema.post("save", async function () {
-  if (this.isNew) {
+  if (this.wasNew) {
     await NotificationSetters.createNotification({
       actorUserId: this.userId,
     });

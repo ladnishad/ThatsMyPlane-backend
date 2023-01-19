@@ -36,10 +36,12 @@ export const set = {
         entity,
       });
 
+      console.log(notificationToSet);
       const savedNotification = await notificationToSet.save();
 
       return savedNotification;
     } catch (e) {
+      console.log(e);
       return e;
     }
   },
