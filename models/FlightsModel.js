@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import dayjs from "dayjs";
 
+import { get as FlightGetters } from "../controllers/flights/helpers";
 import { set as NotificationSetters } from "../controllers/notifications/helpers";
 import { AppStrings } from "../assets/AppStrings";
 
@@ -75,9 +76,26 @@ FlightsSchema.pre("save", async function (next) {
 
 FlightsSchema.post("save", async function () {
   if (this.wasNew) {
-    await NotificationSetters.createNotification({
-      actorUserId: this.userId,
-    });
+    const userPreviousFlightsOnAircraft =
+      await FlightGetters.userFlightsOnAircraft({
+        userId: this?.userId,
+        aircraftId: this?.aircraftId,
+        flightIdToExclude: this?._id,
+      });
+
+    if (userPreviousFlightsOnAircraft.length) {
+      await NotificationSetters.createNotification({
+        actorUserId: this.userId,
+        type: "repeating",
+        impactUserIds: [this.userId],
+        action: "added",
+        entity: "repeatingFlight",
+      });
+    } else {
+      await NotificationSetters.createNotification({
+        actorUserId: this.userId,
+      });
+    }
   }
 });
 export const Flight = model("Flights", FlightsSchema);

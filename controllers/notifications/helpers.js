@@ -36,7 +36,6 @@ export const set = {
         entity,
       });
 
-      console.log(notificationToSet);
       const savedNotification = await notificationToSet.save();
 
       return savedNotification;

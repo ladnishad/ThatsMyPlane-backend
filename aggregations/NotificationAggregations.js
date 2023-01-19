@@ -21,6 +21,11 @@ export const NotificationAggregations = {
           path: "$actor",
         },
       },
+      {
+        $sort: {
+          timestamp: -1,
+        },
+      },
     ];
 
     try {
