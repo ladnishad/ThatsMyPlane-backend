@@ -13,6 +13,7 @@ import { get as userGetters } from "../users/helpers";
 import { FlightAggregations } from "../../aggregations/FlightAggregations";
 import { UserAggregations } from "../../aggregations/UserAggregations";
 import { AircraftAggregations } from "../../aggregations/AircraftAggregations";
+import { log } from "console";
 
 dotenv.config();
 
@@ -76,12 +77,10 @@ export const UserAircrafts = async (req, res) => {
 
     if (cachedResults) {
       const CachedFlightsForUser = JSON.parse(cachedResults);
-
       res.send(CachedFlightsForUser);
     } else {
       const FlightsForUserByAircraft =
         await AircraftAggregations.getAllUserFlightsByAircrafts({ userId });
-
       await redis.set(
         `${userId}-aircrafts`,
         JSON.stringify(FlightsForUserByAircraft),

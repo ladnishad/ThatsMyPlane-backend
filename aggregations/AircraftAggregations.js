@@ -123,6 +123,14 @@ export const AircraftAggregations = {
           },
         },
       },
+      {
+        $lookup: {
+          from: "images",
+          localField: "_id",
+          foreignField: "aircraftId",
+          as: "aircraftImages",
+        },
+      },
     ];
 
     try {
