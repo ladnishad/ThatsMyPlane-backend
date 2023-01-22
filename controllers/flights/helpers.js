@@ -194,6 +194,18 @@ export const get = {
 
     return flightInformation;
   },
+
+  userFlightsOnAircraft: async ({ userId, aircraftId, flightIdToExclude }) => {
+    try {
+      const userFlights = await Flight.find({
+        $and: [{ _id: { $ne: flightIdToExclude } }, { userId }, { aircraftId }],
+      }).exec();
+
+      return userFlights;
+    } catch (e) {
+      return e;
+    }
+  },
 };
 
 export const set = {
