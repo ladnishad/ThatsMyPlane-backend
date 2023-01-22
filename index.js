@@ -84,7 +84,6 @@ const io = socketio(server, {
   },
 });
 
-// io.use(cors(CorsOptions));
 io.use(handleSocket);
 
 server.listen(process.env.SERVER_PORT, async () => {
