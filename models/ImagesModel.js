@@ -1,30 +1,38 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 import dayjs from "dayjs";
 
-const { Schema, model } = mongoose
+const { Schema, model } = mongoose;
 
 const ImageSchema = new Schema({
   _id: String,
   userId: {
     type: String,
-    required: true
+    // required: true,
   },
   imageType: {
     type: String,
-    enum: ["profile", "aircraft"],
-    required: true
+    enum: ["profile", "aircraft", "post"],
+    required: true,
   },
   caption: {
     type: String,
-    default: ""
+    default: "",
+  },
+  url: {
+    type: String,
+    required: true,
   },
   aircraftId: {
     type: String,
-    required: function () { return this.imageType === "aircraft" }
+    required: function () {
+      return this.imageType === "aircraft";
+    },
   },
   isProfilePic: {
     type: Boolean,
-    required: function () { return this.imageType === "profile" }
+    required: function () {
+      return this.imageType === "profile";
+    },
   },
   airlineId: {
     type: String,
@@ -32,49 +40,66 @@ const ImageSchema = new Schema({
   airportId: {
     type: String,
   },
+  userUploaded: {
+    type: Boolean,
+    required: true,
+  },
   uploaded: {
     type: Boolean,
-    default: false
+    required: function () {
+      return this.userUploaded === true;
+    },
   },
   useOnApp: {
     type: Boolean,
-    default: false
+    default: false,
   },
   public: {
     type: Boolean,
-    default: false
+    default: false,
   },
   friends: {
     type: Boolean,
-    default: false
+    default: false,
   },
   fileName: {
     type: String,
-    required: true
+    required: function () {
+      return this.userUploaded === true;
+    },
   },
   fileSize: {
     type: Number,
-    required: true,
+    required: function () {
+      return this.userUploaded === true;
+    },
   },
   fileType: {
     type: String,
-    required: true
+    required: function () {
+      return this.userUploaded === true;
+    },
   },
   attached: {
-      type: Boolean,
-      default: false,
+    type: Boolean,
+    required: function () {
+      return this.userUploaded === true;
     },
+  },
   uploadDate: {
     type: Number,
-    default: dayjs().valueOf()
+    required: function () {
+      return this.userUploaded === true;
+    },
+    default: dayjs().valueOf(),
   },
-})
+});
 
-ImageSchema.pre("save", async function(next) {
-  const _id = mongoose.Types.ObjectId()
-  this._id = _id
-  
-  next()
-})
+ImageSchema.pre("save", async function (next) {
+  const _id = mongoose.Types.ObjectId();
+  this._id = _id;
 
-export const Image = model("Images", ImageSchema)
+  next();
+});
+
+export const Image = model("Images", ImageSchema);

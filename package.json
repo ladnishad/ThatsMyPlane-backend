@@ -4,7 +4,7 @@
   "description": "Backend for the TrackMyFlights App",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon --exec babel-node index.js",
+    "server": "nodemon --exec ./node_modules/.bin/babel-node index.js",
     "prod-server": "NODE_ENV=production nodemon --exec babel-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +21,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "express-jwt": "^6.1.1",
+    "firebase": "^9.15.0",
+    "firebase-admin": "^11.4.1",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.0.5",
     "jwt-redis": "^6.0.0",
@@ -28,7 +30,8 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "redis": "^4.0.6",
+    "redis": "^4.4.0",
+    "socket.io": "^4.5.4",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0"
   },
