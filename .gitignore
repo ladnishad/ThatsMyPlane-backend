@@ -2,5 +2,6 @@ node_modules/
 dataSources/
 config/allowedOrigins.js
 .env
+.DS_Store
 dockerBuildSteps.txt
 migration/PersonalHistoricFlights.js
