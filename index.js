@@ -38,12 +38,8 @@ mongoose.connect(DB_LINK, {
   useUnifiedTopology: true,
 });
 
-const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-
 const RedisClient = createClient({
-  url: redisUrl,
-  password: `${process.env.REDIS_PASSWORD}`,
-  tls: {},
+  url: process.env.REDIS_URL,
 });
 
 RedisClient.on("error", (error) => console.error(`Error : ${error}`));
