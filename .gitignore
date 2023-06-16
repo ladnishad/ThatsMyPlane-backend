@@ -3,5 +3,7 @@ dataSources/
 config/allowedOrigins.js
 .env
 .DS_Store
+docker-compose.yml
 dockerBuildSteps.txt
 migration/PersonalHistoricFlights.js
+.db
